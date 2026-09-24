@@ -2,21 +2,20 @@
 // ties, in navy-blue star pyjamas. Emotional range: sleepy → curious →
 // excited → engaged → happy, driven purely by face channels.
 //
+// The same rig, with options, draws the other students around the world
+// (different skin tones, hairstyles incl. a hijab, and clothes) — see KIDS.
+//
 // Local coordinates: seated, hips at (0,0); top of hair puffs at y≈-280.
 
 import { group, parts, uid, setAttr, setOpacity, fmt } from './svg.js';
 import { Rig } from './rig.js';
 import { PIECE_PATHS } from './pieces.js';
 
-const SKIN = '#E0A67E';
-const SKIN_SHADE = '#C4865F';
-const HAIR = '#2B1911';
-const PJ = '#3C62B8';
 const IVORY = '#F7F5F0';
 const GOLD = '#D8B15E';
 const MOUTH = '#5A2020';
 
-function arm(S) {
+function arm(S, SKIN, SKIN_SHADE) {
   return `
     <path d="M-44 -136 Q-56 -118 -56 -96 L-54 -72 L-38 -72 L-36 -100 Q-34 -122 -28 -134 Z" fill="url(#PJ)"/>
     <g data-part="fore${S}">
@@ -38,14 +37,72 @@ function arm(S) {
 const STAR = (x, y, s = 1) =>
   `<path d="M${x} ${y - 4 * s} L${x + 1.2 * s} ${y - 1.2 * s} L${x + 4 * s} ${y} L${x + 1.2 * s} ${y + 1.2 * s} L${x} ${y + 4 * s} L${x - 1.2 * s} ${y + 1.2 * s} L${x - 4 * s} ${y} L${x - 1.2 * s} ${y - 1.2 * s} Z"/>`;
 
+const HAIRSTYLES = {
+  // back layer, front layer (drawn over the forehead)
+  puffs: (H, G) => ({
+    back: `<path d="M-50 -152 Q-62 -170 -56 -196 Q-64 -226 -44 -246 Q-36 -268 -8 -266 Q18 -274 36 -256 Q60 -246 58 -218 Q66 -194 56 -172 Q60 -156 48 -148 Q40 -140 30 -150 L-30 -150 Q-40 -140 -50 -152 Z" fill="${H}"/>
+      <g transform="translate(-44 -262) rotate(-18)"><path d="${PUFF}" fill="${H}"/></g>
+      <g transform="translate(44 -262) rotate(18) scale(-1 1)"><path d="${PUFF}" fill="${H}"/></g>
+      <ellipse cx="-33" cy="-246" rx="7" ry="4.5" transform="rotate(-38 -33 -246)" fill="${G}"/>
+      <ellipse cx="33" cy="-246" rx="7" ry="4.5" transform="rotate(38 33 -246)" fill="${G}"/>`,
+    front: `<path d="M-42 -206 Q-46 -244 -12 -252 Q24 -258 42 -232 Q46 -220 42 -206 Q38 -222 28 -228 Q22 -218 12 -226 Q4 -216 -6 -226 Q-14 -216 -24 -226 Q-32 -218 -42 -206 Z" fill="${H}"/>
+      <path d="M-20 -244 Q-4 -250 12 -246" stroke="#4E3428" stroke-width="1.6" fill="none" stroke-linecap="round"/>`,
+  }),
+  bob: (H) => ({
+    back: `<path d="M-52 -160 Q-60 -214 -44 -246 Q-24 -272 0 -270 Q24 -272 44 -246 Q60 -214 52 -160 Q40 -150 26 -156 L-26 -156 Q-40 -150 -52 -160 Z" fill="${H}"/>`,
+    front: `<path d="M-43 -206 Q-46 -254 0 -258 Q46 -254 43 -206 Q40 -222 32 -226 L-32 -226 Q-40 -222 -43 -206 Z" fill="${H}"/>
+      <path d="M-24 -250 Q0 -256 22 -250" stroke="#fff" stroke-opacity=".18" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+  }),
+  ponytail: (H, G) => ({
+    back: `<path d="M26 -250 Q70 -262 74 -214 Q76 -176 58 -150 Q62 -186 52 -214 Q46 -236 26 -236 Z" fill="${H}"/>
+      <ellipse cx="34" cy="-248" rx="7" ry="5" fill="${G}"/>
+      <path d="M-46 -196 Q-52 -250 0 -262 Q48 -258 46 -196 Z" fill="${H}"/>`,
+    front: `<path d="M-43 -204 Q-44 -250 -4 -258 Q40 -258 44 -214 Q30 -236 4 -230 Q-24 -226 -43 -204 Z" fill="${H}"/>`,
+  }),
+  short: (H) => ({
+    back: `<path d="M-45 -196 Q-50 -254 -6 -262 Q40 -264 46 -220 Q48 -206 45 -194 Z" fill="${H}"/>`,
+    front: `<path d="M-43 -208 Q-46 -250 -8 -258 Q34 -262 45 -228 Q46 -216 43 -206 Q38 -228 22 -232 Q2 -240 -18 -232 Q-34 -226 -43 -208 Z" fill="${H}"/>
+      <path d="M-18 -250 Q6 -258 28 -248" stroke="#fff" stroke-opacity=".15" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+  }),
+  coily: (H) => ({
+    back: `<path d="M-48 -200 a12 12 0 0 1 2 -22 a13 13 0 0 1 12 -22 a13 13 0 0 1 20 -12 a13 13 0 0 1 22 0 a13 13 0 0 1 20 12 a13 13 0 0 1 12 22 a12 12 0 0 1 2 22 Z" fill="${H}"/>`,
+    front: `<path d="M-43 -206 Q-44 -236 -30 -240 a8 8 0 0 1 14 -6 a8 8 0 0 1 16 -2 a8 8 0 0 1 16 2 a8 8 0 0 1 14 6 Q44 -236 43 -206 Q36 -226 0 -228 Q-36 -226 -43 -206 Z" fill="${H}"/>`,
+  }),
+  hijab: (H, G, cloth) => ({
+    back: `<path d="M-56 -150 Q-62 -206 -48 -244 Q-26 -276 0 -276 Q26 -276 48 -244 Q62 -206 56 -150 Q40 -128 0 -126 Q-40 -128 -56 -150 Z" fill="${cloth}"/>`,
+    front: `<path d="M-44 -196 Q-44 -250 0 -258 Q44 -250 44 -196 Q44 -176 36 -162 Q46 -186 40 -214 Q30 -240 0 -242 Q-30 -240 -40 -214 Q-46 -186 -36 -162 Q-44 -176 -44 -196 Z" fill="${cloth}"/>
+      <path d="M-38 -214 Q0 -236 38 -214" stroke="${G}" stroke-width="2.4" fill="none" opacity=".8"/>
+      <path d="M-40 -164 Q-30 -148 0 -146 Q30 -148 40 -164 Q44 -138 30 -128 L-30 -128 Q-44 -138 -40 -164 Z" fill="${cloth}"/>`,
+  }),
+};
+
+// Students around the world (used in the live class and on the globe).
+export const KIDS = {
+  aiko:   { skin: '#F2CFB0', skinShade: '#D9AE8C', hair: '#16110F', hairStyle: 'bob', top: '#C9474F', topDark: '#9E2F37', pattern: 'none', collar: false },
+  mateo:  { skin: '#C98D62', skinShade: '#A56D45', hair: '#3A2418', hairStyle: 'short', top: '#E0B24E', topDark: '#B98A2E', pattern: 'none', collar: false },
+  amani:  { skin: '#6E4129', skinShade: '#56301D', hair: '#120B08', hairStyle: 'coily', top: '#F7F5F0', topDark: '#C9CED9', pattern: 'knight', collar: false },
+  emma:   { skin: '#F7D6BD', skinShade: '#E0B597', hair: '#D9A955', hairStyle: 'ponytail', top: '#3C62B8', topDark: '#27468F', pattern: 'none', collar: false },
+  layla:  { skin: '#D7A07B', skinShade: '#B9805C', hair: '#1B120E', hairStyle: 'hijab', cloth: '#1D3F84', top: '#2C5BC4', topDark: '#1A3A78', pattern: 'none', collar: false },
+  liam:   { skin: '#F4D3BB', skinShade: '#DDB399', hair: '#B5562B', hairStyle: 'short', top: '#2E8B6E', topDark: '#1F6450', pattern: 'none', collar: false },
+};
+
 const PUFF = 'M-19 4 a9 9 0 0 1 -2 -14 a10 10 0 0 1 12 -10 a10 10 0 0 1 16 2 a10 10 0 0 1 8 14 a10 10 0 0 1 -6 13 a10 10 0 0 1 -14 3 a10 10 0 0 1 -14 -8 Z';
 
-export function createGirl() {
+export function createGirl(options = {}) {
+  const o = {
+    skin: '#E0A67E', skinShade: '#C4865F', hair: '#2B1911', hairStyle: 'puffs',
+    top: '#3C62B8', topDark: '#27468F', topLight: null, pattern: 'stars', collar: true, cloth: '#1D3F84',
+    ...options,
+  };
+  const SKIN = o.skin;
+  const SKIN_SHADE = o.skinShade;
+  const HAIR = o.hair;
+  const hair = HAIRSTYLES[o.hairStyle](HAIR, GOLD, o.cloth);
   const id = uid('girl');
   const markup = `
   <defs>
     <linearGradient id="${id}-pj" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#5379CC"/><stop offset=".6" stop-color="${PJ}"/><stop offset="1" stop-color="#27468F"/>
+      <stop offset="0" stop-color="${o.topLight || o.top}" stop-opacity="1"/><stop offset=".6" stop-color="${o.top}"/><stop offset="1" stop-color="${o.topDark}"/>
     </linearGradient>
     <radialGradient id="${id}-skin" cx=".4" cy=".35" r=".78">
       <stop offset="0" stop-color="#EDB891"/><stop offset=".72" stop-color="${SKIN}"/><stop offset="1" stop-color="${SKIN_SHADE}"/>
@@ -67,11 +124,12 @@ export function createGirl() {
   </defs>
   <g data-part="body">
     <path d="M-38 0 Q-44 -64 -41 -116 Q-38 -136 -16 -142 L16 -142 Q38 -136 41 -116 Q44 -64 38 0 Z" fill="url(#${id}-pj)"/>
-    <g fill="${IVORY}" opacity=".8">${STAR(-22, -100)}${STAR(18, -72)}${STAR(-12, -40, 0.8)}${STAR(24, -26, 0.9)}${STAR(-28, -14, 0.7)}${STAR(8, -118, 0.7)}</g>
-    <circle cx="0" cy="-104" r="2.6" fill="${IVORY}"/><circle cx="0" cy="-80" r="2.6" fill="${IVORY}"/><circle cx="0" cy="-56" r="2.6" fill="${IVORY}"/>
+    ${o.pattern === 'stars' ? `<g fill="${IVORY}" opacity=".8">${STAR(-22, -100)}${STAR(18, -72)}${STAR(-12, -40, 0.8)}${STAR(24, -26, 0.9)}${STAR(-28, -14, 0.7)}${STAR(8, -118, 0.7)}</g>
+    <circle cx="0" cy="-104" r="2.6" fill="${IVORY}"/><circle cx="0" cy="-80" r="2.6" fill="${IVORY}"/><circle cx="0" cy="-56" r="2.6" fill="${IVORY}"/>` : ''}
+    ${o.pattern === 'knight' ? `<path d="${PIECE_PATHS.knight}" transform="translate(-13 -104) scale(.26)" fill="#1D3F84"/>` : ''}
     <path d="M-9 -157 L9 -157 L10 -138 Q0 -133 -10 -138 Z" fill="${SKIN_SHADE}"/>
     <path d="M-9.5 -156 Q0 -148 9.5 -156 L9.5 -149 Q0 -143 -9.5 -149 Z" fill="#A86B48" opacity=".5"/>
-    <path d="M-17 -142 Q-24 -124 -5 -123 Q1 -130 0 -139 Z M17 -142 Q24 -124 5 -123 Q-1 -130 0 -139 Z" fill="${IVORY}"/>
+    ${o.collar ? `<path d="M-17 -142 Q-24 -124 -5 -123 Q1 -130 0 -139 Z M17 -142 Q24 -124 5 -123 Q-1 -130 0 -139 Z" fill="${IVORY}"/>` : `<path d="M-15 -142 Q0 -128 15 -142" stroke="${o.topDark}" stroke-width="4" fill="none"/>`}
     <g data-part="held" opacity="0">
       <rect x="-60" y="-126" width="120" height="80" rx="9" fill="#13244A" stroke="#2C4A86" stroke-width="2.5"/>
       <circle cx="0" cy="-118" r="2.2" fill="#0A1430"/>
@@ -80,15 +138,11 @@ export function createGirl() {
         <path d="${PIECE_PATHS.knight}" transform="scale(.15) translate(-50 -66)" fill="#D8B15E"/>
       </g>
     </g>
-    <g data-part="armL">${arm('L')}</g>
-    <g transform="scale(-1 1)"><g data-part="armR">${arm('R')}</g></g>
+    <g data-part="armL">${arm('L', SKIN, SKIN_SHADE)}</g>
+    <g transform="scale(-1 1)"><g data-part="armR">${arm('R', SKIN, SKIN_SHADE)}</g></g>
     <g data-part="head">
-      <path d="M-50 -152 Q-62 -170 -56 -196 Q-64 -226 -44 -246 Q-36 -268 -8 -266 Q18 -274 36 -256 Q60 -246 58 -218 Q66 -194 56 -172 Q60 -156 48 -148 Q40 -140 30 -150 L-30 -150 Q-40 -140 -50 -152 Z" fill="${HAIR}"/>
-      <g transform="translate(-44 -262) rotate(-18)"><path d="${PUFF}" fill="${HAIR}"/></g>
-      <g transform="translate(44 -262) rotate(18) scale(-1 1)"><path d="${PUFF}" fill="${HAIR}"/></g>
-      <ellipse cx="-33" cy="-246" rx="7" ry="4.5" transform="rotate(-38 -33 -246)" fill="${GOLD}"/>
-      <ellipse cx="33" cy="-246" rx="7" ry="4.5" transform="rotate(38 33 -246)" fill="${GOLD}"/>
-      <ellipse cx="-41" cy="-200" rx="6" ry="9" fill="${SKIN_SHADE}"/><ellipse cx="41" cy="-200" rx="6" ry="9" fill="${SKIN_SHADE}"/>
+      ${hair.back}
+      ${o.hairStyle === 'hijab' ? '' : `<ellipse cx="-41" cy="-200" rx="6" ry="9" fill="${SKIN_SHADE}"/><ellipse cx="41" cy="-200" rx="6" ry="9" fill="${SKIN_SHADE}"/>`}
       <path d="M-41 -208 Q-42 -176 -24 -162 Q-12 -154 0 -154 Q12 -154 24 -162 Q42 -176 41 -208 Q40 -246 0 -248 Q-40 -246 -41 -208 Z" fill="url(#${id}-skin)"/>
       <path d="M24 -206 Q40 -186 22 -162 Q36 -178 37 -200 Z" fill="${SKIN_SHADE}" opacity=".35"/>
       <ellipse cx="-22" cy="-192" rx="6" ry="3.4" fill="#FFF1E4" opacity=".25"/>
@@ -121,8 +175,7 @@ export function createGirl() {
           <path d="M-5 -164.5 Q0 -168 5 -164.5 Q0 -162.8 -5 -164.5 Z" fill="#D0676A"/>
         </g>
       </g>
-      <path d="M-42 -206 Q-46 -244 -12 -252 Q24 -258 42 -232 Q46 -220 42 -206 Q38 -222 28 -228 Q22 -218 12 -226 Q4 -216 -6 -226 Q-14 -216 -24 -226 Q-32 -218 -42 -206 Z" fill="${HAIR}"/>
-      <path d="M-20 -244 Q-4 -250 12 -246" stroke="#4E3428" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      ${hair.front}
       <path data-part="faceLight" clip-path="url(#${id}-face)" d="M-60 -270 H60 V-140 H-60 Z" fill="url(#${id}-screen)" opacity="0" style="mix-blend-mode:screen"/>
     </g>
     <g data-part="spill" opacity="0" style="mix-blend-mode:screen">
@@ -132,6 +185,7 @@ export function createGirl() {
   </g>`.replace(/url\(#PJ\)/g, `url(#${id}-pj)`);
 
   const root = group(markup, { class: 'tdc-girl' });
+  // (hairstyles/clothes come from `options`; the face rig is identical for every kid)
   const p = parts(root);
 
   const rig = new Rig({
@@ -169,14 +223,14 @@ export function createGirl() {
     setAttr(p.held, 'transform', `translate(${fmt(s.heldX)} ${fmt(s.heldY)}) rotate(${fmt(s.heldRot)} 0 -86)`);
     setOpacity(p.spill, s.spill);
     // Eye twinkles hide behind the lids when she blinks.
-    const tw = s.sparkle * (0.85 + 0.15 * Math.sin(t * 22)) * Math.max(0, 1 - s.lid * 1.6);
+    const tw = s.sparkle * (0.88 + 0.12 * Math.sin(t * 5)) * Math.max(0, 1 - s.lid * 1.6);
     // Tiny twinkles sit on the big catchlight (upper-right of each iris).
     const ox = s.lookX * 2.4, oy = s.lookY * 2;
-    setAttr(p.sparkle0, 'transform', `translate(${fmt(2.3 + ox)} ${fmt(-3 + oy)}) rotate(${fmt(t * 90)}) scale(${fmt(tw)})`);
-    setAttr(p.sparkle1, 'transform', `translate(${fmt(2.3 + ox)} ${fmt(-3 + oy)}) rotate(${fmt(-t * 90)}) scale(${fmt(tw)})`);
+    setAttr(p.sparkle0, 'transform', `translate(${fmt(2.3 + ox)} ${fmt(-3 + oy)}) rotate(${fmt(t * 25)}) scale(${fmt(tw)})`);
+    setAttr(p.sparkle1, 'transform', `translate(${fmt(2.3 + ox)} ${fmt(-3 + oy)}) rotate(${fmt(-t * 25)}) scale(${fmt(tw)})`);
     setOpacity(p.reflect0, s.reflect); setOpacity(p.reflect1, s.reflect);
     setAttr(p.pupil0, 'r', fmt(3.4 * s.pupil)); setAttr(p.pupil1, 'r', fmt(3.4 * s.pupil));
-    if (s.breathe) setAttr(p.body, 'transform', `rotate(${fmt(s.body)} 0 0) scale(1 ${fmt(1 + Math.sin(t * 3.2) * 0.012 * s.breathe)})`);
+    if (s.breathe) setAttr(p.body, 'transform', `rotate(${fmt(s.body)} 0 0) scale(1 ${fmt(1 + Math.sin(t * 2.2) * 0.01 * s.breathe)})`);
   });
   return rig;
 }

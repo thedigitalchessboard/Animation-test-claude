@@ -2,27 +2,26 @@
 <html><head><meta charset="utf-8"><title>TDC character sheet</title>
 <style>body{margin:0;background:#0B1E3D}svg{width:100vw;height:100vh;display:block}</style></head>
 <body>
-<svg id="s" viewBox="0 0 1600 900"></svg>
+<svg id="s" viewBox="0 0 1600 1100"></svg>
 <script type="module">
 import { createCoach, COACH_POSES } from '../../tdc-cinematic/src/art/coach.js';
-import { createGirl } from '../../tdc-cinematic/src/art/girl.js';
+import { createGirl, KIDS } from '../../tdc-cinematic/src/art/girl.js';
+import { createAstronaut } from '../../tdc-cinematic/src/art/astronaut.js';
 const svg = document.getElementById('s');
-const poses = ['stand','sorry','proud','wave','poke'];
-poses.forEach((name, i) => {
-  const c = createCoach(); svg.appendChild(c.root);
-  Object.assign(c.state, COACH_POSES[name], { x: 150 + i * 230, y: 260, scale: 0.5 });
-  if (name === 'sorry') Object.assign(c.state, { mSmile: 0, mEek: 1, browTilt: 14, browY: -2, handOpenL: 1, lookX: 0.6 });
-  if (name === 'wave') Object.assign(c.state, { handOpenR: 1 });
-  if (name === 'poke') Object.assign(c.state, { handPointR: 1, mProud: 1, mSmile: 0 });
-  if (name === 'proud') Object.assign(c.state, { mProud: 1, mSmile: 0, lid: 0.25 });
-  c.apply(null, 0.3);
-});
-const fly = createCoach(); svg.appendChild(fly.root);
-Object.assign(fly.state, COACH_POSES.fly, { x: 1350, y: 200, scale: 0.5, rot: 78, capeStream: 1 }); fly.apply(null, 0.2);
-const big = createCoach(); svg.appendChild(big.root);
-Object.assign(big.state, COACH_POSES.stand, { x: 1150, y: 1150, scale: 2.6, mO: 1, mSmile: 0, browY: -4, lookX: -1 }); big.apply(null, 0);
-const g1 = createGirl(); svg.appendChild(g1.root); Object.assign(g1.state, { x: 200, y: 820, scale: 1, lid: 0, mSleepy: 0, mSmile: 1, sparkle: 1, faceLight: .8, reflect: 1 }); g1.apply(null, 0.1);
-const g2 = createGirl(); svg.appendChild(g2.root); Object.assign(g2.state, { x: 520, y: 820, scale: 1, lid: 1 }); g2.apply(null, 0);
-const g3 = createGirl(); svg.appendChild(g3.root); Object.assign(g3.state, { x: 800, y: 820, scale: 1, lid: 0.5, mSleepy:0, mYawn: 1, browY: 2 }); g3.apply(null, 0);
-const g4 = createGirl(); svg.appendChild(g4.root); Object.assign(g4.state, { x: 1000, y: 700, scale: 2.2, lid: 0, mSleepy:0, mO: 1, browY: -4, lookX: 1 }); g4.apply(null, 0);
+const add = (rig, st) => { svg.appendChild(rig.root); Object.assign(rig.state, st); rig.apply(null, 0.3); return rig; };
+const poses = [
+  ['catch', { handOpenR: 1, mO: 1, mSmile: 0 }], ['place', { mProud: 1, mSmile: 0 }],
+  ['apology', { handOpenL: 1, handOpenR: 1, mEek: 1, mSmile: 0, browTilt: 15, lid: 0.5, rot: -14 }],
+  ['shh', { handPointR: 1, mSmile: 0, mProud: 1 }], ['peek', { handOpenL: 1, lookX: -1 }], ['knock', { handPointL: 1 }],
+  ['heart', { handOpenR: 1, mProud: 1, mSmile: 0, lid: 0.35 }], ['salute', { handOpenR: 1 }],
+];
+poses.forEach(([n, extra], i) => add(createCoach(), { ...COACH_POSES[n], x: 100 + i * 190, y: 250, scale: 0.5, ...extra }));
+add(createCoach({ variant: 'mentor' }), { ...COACH_POSES.wave, handOpenR: 1, x: 1560, y: 250, scale: 0.5 });
+Object.values(KIDS).forEach((k, i) => add(createGirl(k), { x: 90 + i * 130, y: 640, scale: 0.55, lid: 0, mSleepy: 0, mSmile: 1 }));
+add(createGirl(), { x: 900, y: 640, scale: 0.55, lid: 0, mSleepy: 0, mYawn: 1, armL: 165, armR: 165, foreL: 5, foreR: 5 });
+add(createGirl(), { x: 1040, y: 640, scale: 0.55, lid: 0.6, mSleepy: 1, armR: 4, foreR: -166 });
+add(createGirl(), { x: 1180, y: 640, scale: 0.55, lid: 0.2, mSleepy: 0, mSmile: 1, armR: 140, foreR: 60, sparkle: 1 });
+add(createAstronaut({ logoUrl: '../../tdc-cinematic/assets/brand/tdc-logo-horizontal-light.webp' }), { x: 200, y: 1000, scale: 1 });
+add(createAstronaut({ tablet: false, skin: '#E9BFA0', hair: '#C58A45' }), { x: 450, y: 1000, scale: 1, flipX: -1 });
+add(createAstronaut({ tablet: false, skin: '#E9BFA0', hair: '#C58A45' }), { x: 700, y: 1000, scale: 1, flipX: -1, armR: -40, foreR: 70, thumb: 1, mSoft: 0, mGrin: 1 });
 </script></body></html>

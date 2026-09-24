@@ -267,39 +267,33 @@ export class EarthScene {
 
   buildCameraTrack() {
     const pe = this.ctx.gsap.parseEase;
-    const [s0] = SCENES.space;
-    const [n0] = SCENES.network;
+    const [s0, s1] = SCENES.space;
     const [f0, f1] = SCENES.coachFly;
-    const [, k1] = SCENES.comedy;
+    const [, p1] = SCENES.players;
     const [d0] = SCENES.dive;
     const [r0, r1] = SCENES.reveal;
-    const [b0, b1] = SCENES.brand;
+    const [, b1] = SCENES.brand;
     // dist: camera distance to Earth; camX/camY: parallel camera offset;
     // lat/lon: point of the globe facing the camera; earthY: planet offset.
+    // (In space the camera also pans with the illustrated stage camera.)
     this.track = new Track([
-      // 01 — slow, majestic approach out of deep space…
-      { t: s0, dist: 22, camX: 0, camY: 0.12, lat: 12, lon: -34, earthY: 0 },
-      { t: n0 + 0.1, dist: 8.2, camX: 0, camY: 0, lat: 15, lon: -8, earthY: 0, ease: 'power3.out' },
-      // 02 — …then the camera breathes while the constellation connects.
-      { t: f0, dist: 7.3, camX: 0.05, camY: 0, lat: 16, lon: 4, earthY: 0, ease: 'sine.inOut' },
-      // 03 — pans with the coach as he flies across.
-      { t: f1, dist: 6.7, camX: 1.9, camY: -0.1, lat: 17, lon: 16, earthY: 0, ease: 'sine.inOut' },
-      // 04 — near-still drift during the comedy.
-      { t: k1 - 0.1, dist: 6.4, camX: 2.2, camY: -0.14, lat: 16, lon: 26, earthY: 0, ease: 'sine.inOut' },
-      // 05 — the dive: accelerate onto her home and into the atmosphere.
-      { t: d0 + 0.55, dist: 1.7, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0, ease: 'power3.in' },
-      { t: d0 + 0.9, dist: 1.1, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0, ease: 'power1.in' },
-      // 11 — pull back from her home to the whole connected world, then settle.
-      { t: r0 + 0.3, dist: 1.1, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0 },
-      { t: r0 + 0.85, dist: 2.7, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon - 5, earthY: 0, ease: 'power2.out' },
-      { t: r1 - 0.2, dist: 4.9, camX: 0, camY: 0, lat: 26, lon: 42, earthY: 0, ease: 'power2.inOut' },
-      { t: r1 + 0.05, dist: 4.85, camX: 0, camY: 0, lat: 25, lon: 45, earthY: 0, ease: 'sine.inOut' },
-      // 12–15 — final horizon: the planet sinks low; its upper cap (Europe →
-      // Asia, with the chess pieces standing on it) stays beneath the logo.
-      { t: b1 - 0.15, dist: 4.9, camX: 0, camY: 0, lat: -8, lon: 42, earthY: -1.78, ease: 'power2.inOut' },
-      { t: TARGET_DURATION, dist: 4.8, camX: 0, camY: 0, lat: -9, lon: 47, earthY: -1.8, ease: 'sine.out' },
+      { t: s0, dist: 26, camX: 0, camY: 0.12, lat: 12, lon: -44, earthY: 0 },
+      { t: s1 - 0.3, dist: 8.0, camX: 0, camY: 0, lat: 15, lon: -10, earthY: 0 },    // majestic approach
+      { t: f1, dist: 7.1, camX: 0, camY: -0.05, lat: 16, lon: 4, earthY: 0 },         // breathing drift
+      { t: p1, dist: 6.8, camX: 0, camY: -0.1, lat: 16, lon: 14, earthY: 0 },
+      { t: d0, dist: 6.5, camX: 0, camY: -0.1, lat: 16, lon: 26, earthY: 0 },
+      { t: d0 + 0.62, dist: 1.7, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0 }, // the dive
+      { t: d0 + 1.0, dist: 1.08, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0 },
+      { t: r0 + 0.3, dist: 1.08, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0 },
+      { t: r0 + 1.1, dist: 2.9, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon - 8, earthY: 0 },  // pull back from her home
+      { t: r1 - 0.5, dist: 5.2, camX: 0, camY: 0, lat: 20, lon: 40, earthY: 0 },      // the whole connected world
+      { t: r1 + 0.1, dist: 5.1, camX: 0, camY: 0, lat: 18, lon: 46, earthY: 0 },
+      // Final horizon: the planet sinks low; its upper cap (Europe → Asia, with
+      // the chess pieces standing on it) stays visible beneath the logo.
+      { t: b1 - 0.1, dist: 4.9, camX: 0, camY: 0, lat: -8, lon: 42, earthY: -1.78 },
+      { t: TARGET_DURATION, dist: 4.8, camX: 0, camY: 0, lat: -9, lon: 50, earthY: -1.8 },
     ], { parseEase: pe, logKeys: ['dist'] });
-    this.b0 = b0;
+    this.f0 = f0;
   }
 
   buildCloudLayer() {
@@ -332,11 +326,11 @@ export class EarthScene {
     const [n0, n1] = SCENES.network;
     const [b0] = SCENES.brand;
     // Student points appear across the globe during scenes 01–02.
-    tl.fromTo(this.nodeUniforms.uReveal, { value: 0 }, { value: 1, duration: n1 - 0.6, ease: 'sine.inOut' }, 0.45);
+    tl.fromTo(this.nodeUniforms.uReveal, { value: 0 }, { value: 1, duration: 1.7, ease: 'sine.inOut' }, 0.8);
     tl.to(this.nodeUniforms.uBoost, { value: 1, duration: 0.3 }, n0);
     // Fly-through clouds (dive) and back out (pull-back).
-    tl.fromTo(this.cloud, { c: 0 }, { c: 1.25, duration: 0.62, ease: 'none' }, d0 + 0.42);
-    tl.to(this.cloud, { c: 0, duration: 0.5, ease: 'none' }, r0 + 0.18);
+    tl.fromTo(this.cloud, { c: 0 }, { c: 1.25, duration: 0.75, ease: 'none' }, d0 + 0.5);
+    tl.to(this.cloud, { c: 0, duration: 0.6, ease: 'none' }, r0 + 0.2);
     // Dim the globe as the network gathers into the logo.
     tl.to(this.earthUniforms.uDim, { value: 0.55, duration: 0.8, ease: 'power2.inOut' }, b0);
     tl.to(this.halo.material, { opacity: 0.45, duration: 0.8 }, b0);
@@ -352,8 +346,13 @@ export class EarthScene {
     const panScale = Math.min(1, aspect / 1.78);
     // Final horizon framing: on portrait screens keep the planet a little higher.
     const earthY = k.earthY * (portrait ? 1.22 : 1);
-    camera.position.set(k.camX * panScale, k.camY, k.dist * (k.dist > 2.2 ? distScale : 1));
-    camera.lookAt(k.camX * panScale, k.camY, 0);
+    // In space, pan together with the illustrated stage camera.
+    const sc = this.ctx.spaceCam;
+    // (Parallax: the distant planet pans less than the characters.)
+    const stagePan = sc && t < SCENES.dive[0] + 1.2 ? (sc.fx - 0.5) * 3.0 * panScale : 0;
+    const camX = k.camX * panScale + stagePan;
+    camera.position.set(camX, k.camY, k.dist * (k.dist > 2.2 ? distScale : 1));
+    camera.lookAt(camX, k.camY, 0);
     this.group.position.y = earthY;
     // The dot matrix is a far-away detail: fade it as the camera dives in.
     this.earthUniforms.uDots.value = Math.min(1, Math.max(0, (k.dist - 1.4) / 1.4));

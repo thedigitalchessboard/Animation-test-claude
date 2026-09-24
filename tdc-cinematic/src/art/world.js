@@ -228,13 +228,16 @@ export function createWorld({ detail = true } = {}) {
     ${skyline(r, { y: 740, minH: 90, maxH: 300, color: '#1C3466', count: 36, lit: 0.22 })}
   </g>
   <g data-part="near">
+    <g data-part="nearBack">
     <rect x="-2000" y="752" width="5600" height="600" fill="#0A1934"/>
     ${house(330, 520, 170, 240, '#1A2F5E', '#0F2146', r)}
     ${house(520, 560, 150, 200, '#22396E', '#132B57', r)}
     ${house(960, 540, 160, 220, '#1C3366', '#0F2146', r)}
     ${house(1140, 500, 190, 260, '#172C5A', '#0C1D40', r)}
     ${detail ? house(110, 560, 180, 200, '#20386B', '#11264F', r) + house(1360, 550, 170, 210, '#1E3569', '#10244C', r) : ''}
+    </g>
     ${bedroomMarkup(id, detail)}
+    <g data-part="exterior">
     <!-- the girl's house: facade with a real hole where the window is -->
     <path d="M700 420 H916 V760 H700 Z M${WINDOW.x} ${WINDOW.y} V${WINDOW.y + WINDOW.h} H${WINDOW.x + WINDOW.w} V${WINDOW.y} Z" fill="url(#${id}-facade)" fill-rule="evenodd"/>
     <g opacity=".18" stroke="#8C98B4" stroke-width="1">${Array.from({ length: 16 }, (_, i) => `<path d="M700 ${440 + i * 20} H916"/>`).join('')}</g>
@@ -255,6 +258,7 @@ export function createWorld({ detail = true } = {}) {
     <g data-part="exteriorSlot"></g>
     ${tree(660, 740, 1.05)}${tree(960, 748, 0.9, '#0E2E52')}${tree(250, 752, 1.2)}${tree(1330, 752, 1.1, '#0E2E52')}
     <g transform="translate(1040 752)"><rect x="-3" y="-120" width="6" height="120" fill="#0A1834"/><circle cx="0" cy="-124" r="36" fill="url(#${id}-lamp)"/><circle cx="0" cy="-124" r="7" fill="#F7E2A6"/></g>
+    </g>
   </g>`;
   const root = group(markup, { class: 'tdc-world' });
   return { root, parts: parts(root), id };

@@ -1,9 +1,9 @@
 # TDC Cinematic — drop-in website animation
 
-A silent, 14-second, real-time (Three.js + GSAP + SVG) animated story for **The Digital Chessboard** homepage.
+A silent, ~36-second, real-time (Three.js + GSAP + SVG) animated short film for **The Digital Chessboard** homepage.
 Everything the animation needs lives in this one folder, so it can be copied into any existing website.
 
-- **Duration:** 14.7 s. The timeline is capped: it can never run past 14.9 s. Timing follows the wall clock, so a slow device drops frames instead of stretching the film.
+- **Duration:** 36.6 s (Disney-style pacing; also works as a 30–40 s ad). `TARGET_DURATION` / `SCENES` in `src/config.js` control it, and a safety cap stops it from ever exceeding 59 s. Timing follows the wall clock, so a slow device drops frames instead of stretching the film.
 - **No audio, no subtitles, no dialogue.** The only text is the brand lockup: the official logo plus *Making ◆ Champions ◆ Worldwide*.
 - **No build step, no CDN.** Three.js and GSAP are vendored in `vendor/` as small ES modules.
 - **Lazy:** until the section comes near the viewport, only a 3 KB script loads.
@@ -167,23 +167,26 @@ To swap a logo, replace the file under the same name, or pass new paths in `asse
 
 | # | Time (s) | Beat |
 |---|---|---|
-| 01 | 0.0–1.5 | Slow approach out of deep space; glowing student points light up the Earth |
-| 02 | 1.2–2.0 | Points connect like a constellation while the camera breathes |
-| 03 | 2.0–2.8 | Coach Knight (a human coach with a cape and a chest emblem) flies across, with a wink at the camera |
-| 04 | 2.8–4.35 | He clips the astronaut's floating knight → brakes → **surprised (held)** → **apologetic grimace, raised palm, little bow (held)** → the astronaut grins and nods → relief → back to his tablet game |
-| 05 | 4.35–5.45 | Dive: space → atmosphere → clouds → city → he lands beside her window → through the window |
-| 06 | 5.45–6.85 | **Quiet sleeping room (held)** → she stirs, yawns → camera pushes in → **notices the tablet: eyes wide, curious (held)** |
-| 07 | 6.85–7.95 | Sits up, scoots over, grabs the tablet, taps it; the screen lights her face and the room dims around her |
-| 08 | 7.95–8.95 | An iris opens through the screen: **official logo (held)** → live class; the coach waves, points, a knight lifts, moves, and settles |
-| 09 | 8.95–9.85 | **Held close-up:** catchlights, screen reflection, tiny sparkle, big smile, a happy blink |
-| 10 | 9.85–10.9 | Camera pulls back out through the window; **the coach smiles proudly and nods (held)**, a knight appears, he taps it |
-| 11 | 10.9–12.3 | Pull back to Earth; the network spreads from her home; six chess pieces rise from connection points with bursts of light |
-| 12 | 12.3–13.0 | The network converges into light → official logo reveal |
-| 13 | 13.0–13.4 | *Making ◆ Champions ◆ Worldwide*, then **the lockup rests on its own (held)** |
-| 14 | 13.6–14.0 | The coach pops in from the side, looks at you, and waves "Hi!" (no text) |
-| 15 | 13.95–14.7 | A knight hops past **in front** of him → looks at the viewer → the knight → the viewer → the knight → chase → exit. End. |
+| 01–02 | 0.0–2.9 | A slow, majestic approach to Earth; student points light up and connect like a constellation |
+| 03 | 2.6–4.0 | Coach Knight (a human coach with a cape and a chest emblem) glides across the Earth and winks at the camera |
+| 04a | 3.8–5.3 | The camera pans to **two astronauts playing chess on a hovering board**, projected from a tablet that shows the TDC logo. One strokes his chin; the other lifts his knight |
+| 04b–c | 5.3–6.3 | Coach Knight dashes between them and knocks the knight flying. He brakes and turns back, **surprised (held)**; the astronauts are stunned |
+| 04d | 6.3–7.4 | He catches the tumbling knight, flies it back and **sets it down carefully** on its square |
+| 04e | 7.4–8.5 | **Hands together, a bow to each player: "so sorry!"** They laugh; one gives a thumbs-up |
+| 04f | 8.5–9.2 | A salute goodbye; the game carries on (the knight makes its move) |
+| 05 | 9.2–10.5 | Dive: space → atmosphere → clouds → a city at dawn |
+| 06 | 10.5–13.5 | He lands beside her window and **waits**: peeks in at her sleeping, "shh" to us, taps the glass. A golden sparkle flies to her tablet |
+| 07 | 13.5–17.3 | Into the quiet room. **She wakes naturally**: eyelids flutter, a big stretch and yawn, rubs her eye, then **notices the glowing tablet (held)** |
+| 08 | 17.3–19.3 | She sits up, picks up the tablet and taps it; the screen lights her face and the room dims around her |
+| 09 | 19.3–23.5 | Through the screen: **official logo (held)** → a live class with a TDC mentor and **classmates from Japan, Brazil, Kenya and the UAE**. The mentor shows a knight move, then **she makes her own move** with her finger → check mark, confetti, everyone cheers |
+| 10 | 23.5–25.5 | Close-up: **her eyes light up** (catchlights, screen reflection, sparkle), big smile, a "Yes!" fist pump, a happy blink |
+| 11 | 25.5–27.5 | Back outside: he's still there, **hand on heart, proud (held)**. A knight appears; he taps it |
+| 12 | 27.5–30.9 | Pull back to Earth: the network spreads from her home, six chess pieces rise, and **children in London, Berlin, Dubai, Nairobi and Tokyo** appear on the globe, learning on tablets |
+| 13–14 | 30.9–33.4 | Everything gathers into light → official logo → *Making ◆ Champions ◆ Worldwide* (**held**) |
+| 15 | 33.4–34.3 | The coach pops in from the side, looks at you, and waves "Hi!" |
+| 16 | 34.3–36.6 | A knight hops past in front of him → he looks at the viewer → the knight → the viewer → the knight → chase → exit. End. |
 
-The transitions are quick and continuous, and the emotional beats (marked **held**) get time to land. If a timing edit ever pushes the film past `HARD_MAX_DURATION` (14.9 s), `TimelineManager` time-scales it back down and logs a warning.
+Every camera move is a smooth spline through its keyframes, secondary motion (breathing, floating, the cape) is slow and gentle, and the emotional beats (marked **held**) get time to land. For a 30 s ad cut, shorten `SCENES` in `src/config.js`: every scene reads its timing from there. If a timing edit ever pushes the film past `HARD_MAX_DURATION` (59 s), `TimelineManager` time-scales it back down and logs a warning.
 
 ---
 
@@ -198,7 +201,7 @@ tdc-cinematic/
 │   ├── config.js           timings, colours, nodes, device profiles
 │   ├── core/
 │   │   ├── SceneManager.js        layers, render loop, play/pause/visibility
-│   │   ├── TimelineManager.js     master GSAP timeline + 14.9 s hard cap
+│   │   ├── TimelineManager.js     master GSAP timeline + 59 s hard cap
 │   │   ├── AssetManager.js        libraries, images, logo background removal
 │   │   ├── ResponsiveManager.js   size, profile (desktop/tablet/mobile), portrait
 │   │   ├── PerformanceManager.js  IntersectionObserver, page visibility, adaptive quality

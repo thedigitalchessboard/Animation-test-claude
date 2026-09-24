@@ -63,7 +63,15 @@ function arm(side) {
     </g>`;
 }
 
-export function createCoach({ gold = GOLD } = {}) {
+// Palette swaps for the online-class mentor (a different TDC coach, so Coach
+// Knight can be outside the window while she teaches the live lesson).
+const MENTOR = {
+  '#B87752': '#E0AC86', '#955A3B': '#C08962', '#CB8C66': '#ECC19E', '#6E3F29': '#A06B4B',
+  '#1A1311': '#231714', '#23478F': '#4A7BDB', '#132D5E': '#2C5BC4', '#0F2550': '#1E4596',
+};
+
+export function createCoach({ gold = GOLD, variant = 'knight' } = {}) {
+  const mentor = variant === 'mentor';
   const id = uid('coach');
   const markup = `
   <defs>
@@ -87,7 +95,7 @@ export function createCoach({ gold = GOLD } = {}) {
       <path d="M2 120 Q9 170 8 1000 L13 1000 Q16 170 16 120 Z" fill="url(#${id}-trail)" opacity=".75"/>
       <path d="M28 150 Q36 170 35 700 L38 700 Q41 170 38 150 Z" fill="url(#${id}-trail)" opacity=".55"/>
     </g>
-    <g data-part="cape">
+    <g data-part="cape" ${mentor ? 'display="none"' : ''}>
       <path data-part="capePath" d="${CAPE_REST}" fill="url(#${id}-cape)" stroke="${gold}" stroke-width="2.2" stroke-linejoin="round"/>
     </g>
     <g data-part="legL">${leg().replace('SHIN', 'shinL')}</g>
@@ -97,9 +105,11 @@ export function createCoach({ gold = GOLD } = {}) {
     <path d="M-31 -4 Q-35 -62 -44 -118 Q-42 -134 -22 -140 L22 -140 Q42 -134 44 -118 Q35 -62 31 -4 Z" fill="url(#${id}-jacket)"/>
     <path d="M-44 -118 Q-38 -70 -31 -4 L-25 -4 Q-31 -66 -37 -117 Z" fill="#2C5BC4" opacity=".55"/>
     <path d="M44 -118 Q38 -70 31 -4 L25 -4 Q31 -66 37 -117 Z" fill="#2C5BC4" opacity=".35"/>
-    <path d="M-41 -113 L0 -90 L41 -113" stroke="${IVORY}" stroke-width="3.2" fill="none" stroke-linejoin="round"/>
-    <path d="M0 -72 L0 -8" stroke="${IVORY}" stroke-width="1.4" opacity=".35"/>
-    <g data-part="emblem" transform="translate(0 -84)">
+    ${mentor ? `<path d="M-16 -141 L0 -96 L16 -141 Z" fill="${IVORY}"/>
+    <path d="M-16 -141 L-4 -100 L-10 -60 M16 -141 L4 -100 L10 -60" stroke="#16336E" stroke-width="2.4" fill="none" stroke-linejoin="round"/>`
+    : `<path d="M-41 -113 L0 -90 L41 -113" stroke="${IVORY}" stroke-width="3.2" fill="none" stroke-linejoin="round"/>
+    <path d="M0 -72 L0 -8" stroke="${IVORY}" stroke-width="1.4" opacity=".35"/>`}
+    <g data-part="emblem" transform="${mentor ? 'translate(-24 -104) scale(.62)' : 'translate(0 -84)'}">
       <circle r="13.5" fill="${JACKET_DARK}" stroke="${gold}" stroke-width="2.2"/>
       <path d="${PIECE_PATHS.knight}" transform="scale(.19) translate(-50 -66)" fill="${gold}"/>
     </g>
@@ -109,13 +119,15 @@ export function createCoach({ gold = GOLD } = {}) {
     <g data-part="armL">${arm('L')}</g>
     <g transform="scale(-1 1)"><g data-part="armR">${arm('R')}</g></g>
     <g data-part="head">
+      ${mentor ? `<path d="M-31 -196 Q-38 -240 0 -244 Q38 -240 31 -196 Q36 -158 28 -134 Q14 -128 12 -150 L-12 -150 Q-14 -128 -28 -134 Q-36 -158 -31 -196 Z" fill="${HAIR}"/>` : ''}
       <ellipse cx="-24" cy="-186" rx="5" ry="8" fill="${SKIN}"/><ellipse cx="24" cy="-186" rx="5" ry="8" fill="${SKIN}"/>
       <path d="M-24 -196 Q-25 -170 -16 -158 Q-8 -148 0 -148 Q8 -148 16 -158 Q25 -170 24 -196 Q23 -222 0 -224 Q-23 -222 -24 -196 Z" fill="url(#${id}-skin)"/>
       <ellipse cx="0" cy="-208" rx="22" ry="6.5" fill="${SKIN_SHADE}" opacity=".4"/>
       <path d="M13 -196 Q22 -178 12 -158 Q20 -170 21 -190 Z" fill="${SKIN_SHADE}" opacity=".35"/>
       <ellipse cx="-13" cy="-178" rx="4.5" ry="2.6" fill="#FFE9D6" opacity=".22"/>
-      <path d="M-25 -190 Q-28 -222 -6 -230 Q18 -236 27 -212 Q29 -200 25 -188 Q23 -204 16 -210 Q2 -214 -10 -210 Q-20 -204 -25 -190 Z" fill="${HAIR}"/>
-      <path d="M-24.5 -196 L-22.5 -181 L-20.5 -196 Z M24.5 -196 L22.5 -181 L20.5 -196 Z" fill="${HAIR}"/>
+      ${mentor ? `<circle cx="-25" cy="-176" r="2.6" fill="${gold}"/><circle cx="25" cy="-176" r="2.6" fill="${gold}"/>`
+      : `<path d="M-25 -190 Q-28 -222 -6 -230 Q18 -236 27 -212 Q29 -200 25 -188 Q23 -204 16 -210 Q2 -214 -10 -210 Q-20 -204 -25 -190 Z" fill="${HAIR}"/>
+      <path d="M-24.5 -196 L-22.5 -181 L-20.5 -196 Z M24.5 -196 L22.5 -181 L20.5 -196 Z" fill="${HAIR}"/>`}
       <g data-part="features">
         ${[-9, 9].map((x, i) => `
         <g transform="translate(${x} -187)">
@@ -146,13 +158,15 @@ export function createCoach({ gold = GOLD } = {}) {
         </g>
         <path data-part="mProud" d="M-8.5 -168.5 Q0 -161.5 8.5 -168.5" stroke="${MOUTH}" stroke-width="2.3" fill="none" stroke-linecap="round" opacity="0"/>
       </g>
-      <path d="M-10 -226 Q2 -251 29 -236 Q22 -232 18 -222 Q8 -231 -10 -226 Z" fill="${HAIR}"/>
+      ${mentor ? `<path d="M-26 -188 Q-30 -228 0 -232 Q30 -228 27 -190 Q24 -212 8 -214 Q-10 -212 -26 -188 Z" fill="${HAIR}"/>
+      <path d="M-4 -229 Q10 -234 20 -226" stroke="#4A3A33" stroke-width="1.5" fill="none" stroke-linecap="round"/>`
+      : `<path d="M-10 -226 Q2 -251 29 -236 Q22 -232 18 -222 Q8 -231 -10 -226 Z" fill="${HAIR}"/>
       <path d="M-1 -235 Q9 -243 21 -237" stroke="#4A3A33" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <path d="M-3 -212 q-7 6 -2 12 q4 3 5 -2" stroke="${HAIR}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <path d="M-3 -212 q-7 6 -2 12 q4 3 5 -2" stroke="${HAIR}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`}
     </g>
   </g>`.replace(/url\(#JACKET\)/g, `url(#${id}-jacket)`);
 
-  const root = group(markup, { class: 'tdc-coach' });
+  const root = group(mentor ? markup.replace(/#[0-9A-F]{6}/g, (c) => MENTOR[c] || c) : markup, { class: 'tdc-coach' });
   const p = parts(root);
 
   const rig = new Rig({
@@ -190,7 +204,7 @@ export function createCoach({ gold = GOLD } = {}) {
     // Cape: blend rest ↔ streaming and add a travelling ripple on the hem.
     const k = s.capeStream;
     for (let i = 0; i < capeA.length; i++) {
-      const wobble = i > 2 && i < capeA.length - 4 ? Math.sin(t * 13 + i * 0.9) * (1.5 + 4 * k) * s.capeFlutter : 0;
+      const wobble = i > 2 && i < capeA.length - 4 ? Math.sin(t * (4 + 4 * k) + i * 0.7) * (1 + 3 * k) * s.capeFlutter : 0;
       capeNums[i] = capeA[i] + (capeB[i] - capeA[i]) * k + wobble;
     }
     setAttr(p.capePath, 'd', fillTemplate(capeTpl, capeNums));
@@ -222,6 +236,21 @@ export const COACH_POSES = {
   // Hands on hips, chest out: proud coach.
   proud: { armL: 34, foreL: -78, armR: 34, foreR: -78, legL: 5, shinL: 0, legR: 5, shinR: 0, head: 4, body: 0 },
   poke: { armL: 34, foreL: -78, armR: 88, foreR: 18, legL: 5, shinL: 0, legR: 5, shinR: 0, head: 8, body: 0 },
+  // Reaching out to catch the drifting knight.
+  catch: { armL: 20, foreL: -10, armR: 118, foreR: -6, legL: 14, shinL: -30, legR: 6, shinR: -14, head: -6, body: 0 },
+  // Carefully setting the knight back down.
+  place: { armL: 18, foreL: -12, armR: 62, foreR: -62, legL: 10, shinL: -20, legR: 4, shinR: -8, head: 10, body: 0 },
+  // "I'm so sorry": hands pressed together at the chest (the bow comes from `rot`).
+  apology: { armL: 14, foreL: -140, armR: 14, foreR: -140, legL: 4, shinL: -6, legR: 4, shinR: -6, head: 12, body: 0 },
+  // Finger to his lips: "shh, she's sleeping".
+  shh: { armL: 14, foreL: -8, armR: -10, foreR: -168, legL: 3, shinL: 0, legR: 3, shinR: 0, head: 4, body: 0 },
+  // Leaning in to peek through the window, one hand on the frame.
+  peek: { armL: 70, foreL: 40, armR: 16, foreR: -30, legL: 6, shinL: -6, legR: 2, shinR: 0, head: -10, body: 0 },
+  // A gentle tap on the glass.
+  knock: { armL: 84, foreL: -18, armR: 16, foreR: -30, legL: 6, shinL: -6, legR: 2, shinR: 0, head: -8, body: 0 },
+  // Proud: one hand on his heart, the other on his hip.
+  heart: { armL: 34, foreL: -78, armR: 10, foreR: -142, legL: 5, shinL: 0, legR: 5, shinR: 0, head: 6, body: 0 },
+  salute: { armL: 14, foreL: -8, armR: 150, foreR: 70, legL: 3, shinL: 0, legR: 3, shinR: 0, head: -4, body: 0 },
   wave: { armL: 14, foreL: -8, armR: 150, foreR: 30, legL: 3, shinL: 0, legR: 3, shinR: 0, head: -4, body: 0 },
   run: { armL: 120, foreL: 10, armR: 40, foreR: -70, legL: 40, shinL: -70, legR: -20, shinR: 30, head: -50, body: 0 },
 };

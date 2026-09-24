@@ -17,7 +17,7 @@ import { FinalBrandScene } from '../scenes/FinalBrandScene.js';
 
 // Frame shown for prefers-reduced-motion: Earth + network + pieces + logo +
 // tagline + Coach Knight waving.
-const STILL_TIME = SCENES.wave[0] + 0.26;
+const STILL_TIME = SCENES.wave[0] + 0.5;
 
 export class SceneManager {
   constructor(container, options, a11y) {
@@ -117,6 +117,8 @@ export class SceneManager {
     const clouds = div('tdc-layer--clouds');
     const overlay = createSvgRoot('tdc-layer tdc-layer--overlay');
     stage.appendChild(overlay);
+    const kids = createSvgRoot('tdc-layer tdc-layer--kids');
+    stage.appendChild(kids);
     const tablet = div('tdc-layer--tablet');
     const brand = div('tdc-layer--brand');
     const front = createSvgRoot('tdc-layer tdc-layer--front');
@@ -130,7 +132,7 @@ export class SceneManager {
     }
     const fx = div('tdc-layer--fx');
     fx.innerHTML = '<div class="tdc-fx-flash"></div><div class="tdc-fx-vignette"></div><div class="tdc-fx-grain"></div>';
-    return { webgl, canvas, world, clouds, overlay, tablet, brand, front, fx, flash: fx.firstChild, glowId };
+    return { webgl, canvas, world, clouds, overlay, kids, tablet, brand, front, fx, flash: fx.firstChild, glowId };
   }
 
   /** Visibility of whole layers between the WebGL and illustrated parts. */
@@ -140,22 +142,26 @@ export class SceneManager {
     const [r0] = SCENES.reveal;
     const [t0] = SCENES.tablet;
     const [o0] = SCENES.outside;
+    const [b0] = SCENES.brand;
     tl.set(L.webgl, { autoAlpha: 1 }, 0);
-    tl.to(L.webgl, { autoAlpha: 0, duration: 0.1 }, d0 + 0.72);
-    tl.to(L.webgl, { autoAlpha: 1, duration: 0.2 }, r0 + 0.3);
+    tl.to(L.webgl, { autoAlpha: 0, duration: 0.1 }, d0 + 0.88);
+    tl.to(L.webgl, { autoAlpha: 1, duration: 0.2 }, r0 + 0.35);
     tl.set(L.overlay, { autoAlpha: 1 }, 0);
-    tl.set(L.overlay, { autoAlpha: 0 }, d0 + 0.75);
+    tl.set(L.overlay, { autoAlpha: 0 }, d0 + 0.95);
+    tl.set(L.kids, { autoAlpha: 0 }, 0);
+    tl.set(L.kids, { autoAlpha: 1 }, r0 + 0.5);
+    tl.set(L.kids, { autoAlpha: 0 }, b0 + 0.5);
     tl.set(L.front, { autoAlpha: 0 }, 0);
     tl.set(L.front, { autoAlpha: 1 }, SCENES.wave[0] - 0.01);
     // Tablet wakes up → soft flash; the knight tap outside → gold flash.
-    tl.fromTo(L.flash, { opacity: 0 }, { opacity: 0.16, duration: 0.08, yoyo: true, repeat: 1 }, t0 + 0.99);
-    tl.fromTo(L.flash, { opacity: 0 }, { opacity: 0.16, duration: 0.08, yoyo: true, repeat: 1 }, o0 + 0.92);
+    tl.fromTo(L.flash, { opacity: 0 }, { opacity: 0.16, duration: 0.1, yoyo: true, repeat: 1 }, t0 + 1.55);
+    tl.fromTo(L.flash, { opacity: 0 }, { opacity: 0.14, duration: 0.12, yoyo: true, repeat: 1 }, o0 + 1.85);
   }
 
   onResize() {
     const { W, H, profile } = this.responsive;
     this.three.setSize(W, H, profile);
-    for (const svg of [this.layers.overlay, this.layers.front]) svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    for (const svg of [this.layers.overlay, this.layers.front, this.layers.kids]) svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     this.layers.world.removeAttribute('viewBox');
     this.stage.dataset.profile = profile.name;
     this.stage.classList.toggle('tdc-is-portrait', this.responsive.portrait);

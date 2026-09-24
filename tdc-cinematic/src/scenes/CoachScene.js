@@ -33,6 +33,10 @@ export class CoachScene {
     slot.appendChild(this.windowKnight.root);
     this.ring = el('circle', { r: '10', fill: 'none', stroke: '#F2D892', 'stroke-width': '1.2', opacity: '0' }, slot);
     this.ringState = { r: 2, o: 0 };
+    // The magic "wake-up" sparkle he sends through the glass to her tablet.
+    this.spark = el('g', { opacity: '0' }, slot);
+    this.spark.innerHTML = '<circle r="3.2" fill="#F2D892" opacity=".35"/><path d="M0 -2.4 L.6 -.6 L2.4 0 L.6 .6 L0 2.4 L-.6 .6 L-2.4 0 L-.6 -.6 Z" fill="#FFF6D6"/>';
+    this.sparkState = { x: 846, y: 470, o: 0, s: 1 };
 
     // --- finale (front pixel-space layer): wave + the knight challenge ---
     const front = ctx.layers.front;
@@ -56,63 +60,96 @@ export class CoachScene {
 
   buildSpace(tl) {
     const c = this.space.state;
-    const [f0] = SCENES.coachFly;
-    const [k0, k1] = SCENES.comedy;
+    const [c0, c1] = SCENES.coachFly;
+    const [b0] = SCENES.bump;
+    const [s0, s1] = SCENES.surprise;
+    const [f0, f1] = SCENES.fix;
+    const [so0, so1] = SCENES.sorry;
+    const [fa0] = SCENES.farewell;
     const [d0] = SCENES.dive;
-    const bump = k0 + 0.05;
 
-    // 03 — flies in: friendly, confident, playful (a quick wink at the camera).
-    tl.set(c, { opacity: 1 }, f0 - 0.02);
-    tl.to(c, { x: 0.3, y: 0.5, duration: 0.45, ease: 'power1.out' }, f0);
-    tl.to(c, { x: 0.57, y: 0.47, rot: 74, duration: bump - f0 - 0.45, ease: 'none' }, f0 + 0.45);
-    tl.to(c, { lookX: -0.5, lookY: -0.2, turn: -0.3, duration: 0.12 }, f0 + 0.18);
-    tl.to(c, { glint: 1, duration: 0.14, yoyo: true, repeat: 1 }, f0 + 0.26);
-    tl.to(c, { lid: 1, duration: 0.06, yoyo: true, repeat: 1 }, f0 + 0.3); // wink
-    tl.to(c, { lookX: 0.4, lookY: 0, turn: 0.2, duration: 0.14 }, f0 + 0.5);
+    // 03 — Coach Knight glides across the Earth: confident, friendly, a wink.
+    tl.set(c, { opacity: 1 }, c0 - 0.05);
+    tl.to(c, { x: 0.42, y: 0.5, duration: 0.9, ease: 'sine.out' }, c0);
+    tl.to(c, { lookX: -0.5, lookY: -0.2, turn: -0.35, duration: 0.25, ease: 'sine.inOut' }, c0 + 0.35);
+    tl.to(c, { glint: 1, duration: 0.25, yoyo: true, repeat: 1 }, c0 + 0.55);
+    tl.to(c, { lid: 1, duration: 0.1, yoyo: true, repeat: 1, ease: 'sine.inOut' }, c0 + 0.62);   // wink
+    tl.to(c, { lookX: 0.4, lookY: 0, turn: 0.2, duration: 0.3 }, c0 + 0.95);
+    tl.to(c, { x: 1.45, y: 0.46, duration: c1 - c0 - 0.8, ease: 'power1.in' }, c0 + 0.9);          // out of frame
+    tl.set(c, { opacity: 0 }, c1 + 0.2);
 
-    // 04 — clips the astronaut's floating knight.
-    // Momentum carries him on as he brakes upright (cape swings through)…
-    tl.to(c, { x: 0.62, y: 0.5, rot: 10, capeStream: 0.3, trail: 0, ...COACH_POSES.brake, duration: 0.3, ease: 'power3.out' }, bump);
-    // …surprised: eyes wide, brows up, "o" mouth, looking back at the tumbling knight. HOLD.
-    tl.to(c, { mSmile: 0, mO: 1, browY: -4.5, lookX: 1, lookY: -1, turn: 0.55, head: -9, duration: 0.09, ease: 'power2.out' }, bump + 0.04);
-    tl.to(c, { lid: 1, duration: 0.05, yoyo: true, repeat: 3 }, bump + 0.3); // disbelieving double-blink
-    // Turns to the astronaut: apologetic grimace, worried brows, small raised palm,
-    // sheepish scratch of the head and a little bow. HOLD.
-    tl.to(c, { lookX: 1, lookY: 0.1, turn: 0.4, head: 4, duration: 0.14, ease: 'sine.inOut' }, bump + 0.52);
-    tl.to(c, { ...COACH_POSES.sorry, rot: -3, mO: 0, mEek: 1, browY: -1.5, browTilt: 15, handOpenL: 1, duration: 0.2, ease: 'power2.out' }, bump + 0.6);
-    tl.to(c, { rot: -11, duration: 0.14, yoyo: true, repeat: 1, ease: 'sine.inOut' }, bump + 0.78);
-    // The astronaut grins → relief: big warm smile, shoulders drop.
-    tl.to(c, { ...COACH_POSES.relieved, rot: 0, mEek: 0, mSmile: 1, browTilt: 0, browY: -1, lid: 0.35, handOpenL: 0, duration: 0.22, ease: 'power2.out' }, bump + 1.08);
+    // 04b — he zooms back in from the left, straight between the two players…
+    tl.set(c, { x: 0.98, y: 0.44, rot: 80, lookX: 0.5, lookY: 0, turn: 0.2, trail: 1, capeStream: 1, opacity: 1 }, b0 - 0.32);
+    tl.to(c, { x: 1.73, duration: 0.45, ease: 'none' }, b0 - 0.3);
+    // …clips the hovering knight and brakes hard, momentum carrying him on.
+    tl.to(c, { x: 1.76, y: 0.3, rot: 8, capeStream: 0.3, trail: 0, ...COACH_POSES.brake, duration: 0.35, ease: 'power3.out' }, b0 + 0.15);
 
-    // 05 — turns toward Earth and dives, shrinking into the distance.
-    tl.to(c, { lid: 0, lookX: -0.8, lookY: 0.8, turn: -0.3, duration: 0.12 }, k1 - 0.3);
-    tl.to(c, { x: 0.55, y: 0.44, duration: 0.3, ease: 'power2.inOut' }, k1 - 0.26); // pulls back, clear of the astronaut
-    tl.to(c, { ...COACH_POSES.dive, rot: 232, lookX: 0, lookY: 0, turn: 0, capeStream: 1, trail: 1, duration: 0.24, ease: 'power2.inOut' }, k1 - 0.2);
-    tl.to(c, { x: 0.36, y: 0.56, scale: 0.02, duration: 0.55, ease: 'power2.in' }, d0 + 0.05);
-    tl.to(c, { opacity: 0, duration: 0.1 }, d0 + 0.5);
+    // 04c — "Uh-oh." Turns back, eyes wide, "o" mouth. HOLD.
+    tl.to(c, { mSmile: 0, mO: 1, browY: -4.5, lookX: -0.8, lookY: -0.8, turn: -0.5, head: -8, duration: 0.2, ease: 'power2.out' }, s0);
+    tl.to(c, { lid: 1, duration: 0.07, yoyo: true, repeat: 3 }, s0 + 0.35);   // disbelieving double-blink
+
+    // 04d — darts up and catches the tumbling knight, flies it back and sets it
+    // down very carefully on its square.
+    tl.to(c, { x: 1.66, y: 0.29, rot: -10, ...COACH_POSES.catch, handOpenR: 1, mO: 0.6, lookX: 0.2, lookY: -0.6, turn: 0.1, duration: 0.25, ease: 'power2.out' }, f0);
+    tl.to(c, { handOpenR: 0, mO: 0, mEek: 1, duration: 0.1 }, f0 + 0.3);
+    tl.to(c, { x: 1.46, y: 0.325, rot: 4, ...COACH_POSES.place, lookX: 0.6, lookY: 0.8, turn: 0.3, duration: 0.55, ease: 'power2.inOut' }, f0 + 0.32);
+    tl.to(c, { y: 0.345, head: 14, duration: 0.25, ease: 'sine.inOut' }, f1 - 0.28);
+
+    // 04e — "I'm SO sorry!": hands pressed together, worried brows, a bow to each player.
+    tl.to(c, { ...COACH_POSES.apology, x: 1.5, y: 0.255, rot: 0, handOpenL: 1, handOpenR: 1, mEek: 1, browY: -1.5, browTilt: 15, lid: 0.35, lookX: -0.8, lookY: 0.5, turn: -0.3, duration: 0.3, ease: 'power2.out' }, so0);
+    tl.to(c, { rot: -14, duration: 0.28, yoyo: true, repeat: 1, ease: 'sine.inOut' }, so0 + 0.15);
+    tl.to(c, { lookX: 0.8, turn: 0.3, duration: 0.2 }, so0 + 0.45);
+    tl.to(c, { rot: 14, duration: 0.25, yoyo: true, repeat: 1, ease: 'sine.inOut' }, so0 + 0.5);
+    // They laugh → relief: big warm smile.
+    tl.to(c, { ...COACH_POSES.relieved, mEek: 0, mSmile: 1, browTilt: 0, browY: -1, lid: 0.3, handOpenL: 0, handOpenR: 0, lookX: 0, lookY: 0, turn: 0, duration: 0.3, ease: 'power2.out' }, so1 - 0.25);
+
+    // 04f — a cheerful salute goodbye, then he turns toward Earth.
+    tl.to(c, { ...COACH_POSES.salute, handOpenR: 1, lid: 0, duration: 0.25, ease: 'back.out(1.6)' }, fa0);
+    tl.to(c, { foreR: 40, duration: 0.18, ease: 'sine.out' }, fa0 + 0.35);
+    tl.to(c, { ...COACH_POSES.dive, rot: 228, handOpenR: 0, lookX: 0, lookY: 0, capeStream: 1, trail: 1, duration: 0.3, ease: 'power2.inOut' }, d0 - 0.15);
+
+    // 05 — dives toward her home, shrinking into the distance.
+    tl.to(c, { x: 0.7, y: 0.58, scale: 0.02, duration: 0.8, ease: 'power2.in' }, d0 + 0.1);
+    tl.to(c, { opacity: 0, duration: 0.12 }, d0 + 0.75);
   }
 
   buildWindow(tl) {
     const c = this.window.state;
     const k = this.windowKnight.state;
-    const [o0, o1] = SCENES.outside;
+    const sp = this.sparkState;
     const [d0] = SCENES.dive;
-    // End of the dive: he streaks down out of the sky and lands beside her
-    // window (seen as the camera flies in), then waits there, out of shot.
-    tl.set(c, { ...COACH_POSES.dive, x: 930, y: 150, rot: 200, scale: 0.12, trail: 1, capeStream: 1, opacity: 1 }, 0);
-    tl.to(c, { x: 872, y: 486, scale: 0.16, duration: 0.3, ease: 'power2.out' }, d0 + 0.66);
-    tl.to(c, { ...COACH_POSES.proud, rot: 0, trail: 0, capeStream: 0.25, duration: 0.16, ease: 'back.out(2)' }, d0 + 0.84);
-    // He sees her learning: warm, proud smile and a slow nod. HOLD.
-    tl.to(c, { lid: 0.3, head: 3, duration: 0.15 }, o0 + 0.42);
-    tl.to(c, { head: 9, duration: 0.14, yoyo: true, repeat: 1, ease: 'sine.inOut' }, o0 + 0.5);
-    // A knight appears beside him (with a sparkle); he notices and taps it.
-    tl.to(k, { scale: 0.15, rot: 0, duration: 0.24, ease: 'back.out(3)' }, o0 + 0.62);
-    tl.to(c, { lookX: 1, turn: 0.5, lid: 0, browY: -2.5, mProud: 0, mSmile: 1, duration: 0.1 }, o0 + 0.74);
-    tl.to(c, { ...COACH_POSES.poke, handPointR: 1, duration: 0.12, ease: 'power2.out' }, o0 + 0.8);
-    tl.to(k, { y: 462, rot: 14, duration: 0.07, ease: 'power2.out' }, o0 + 0.9);              // lift
-    tl.to(k, { x: 906, y: 468, rot: 0, duration: 0.09, ease: 'power2.in' }, o0 + 0.97);       // settle
-    tl.fromTo(this.ringState, { r: 2, o: 0.9 }, { r: 60, o: 0, duration: 0.5, ease: 'power2.out' }, o0 + 0.92);
-    tl.to(c, { ...COACH_POSES.proud, handPointR: 0, duration: 0.14 }, o1 - 0.02);
+    const [a0, a1] = SCENES.arrive;
+    const [o0, o1] = SCENES.outside;
+
+    // 06 — he streaks down out of the sky and lands softly beside her window…
+    tl.set(c, { ...COACH_POSES.dive, x: 930, y: 60, rot: 200, scale: 0.12, trail: 1, capeStream: 1, opacity: 0 }, 0);
+    tl.set(c, { opacity: 1 }, a0 + 0.3);
+    tl.to(c, { x: 876, y: 486, scale: 0.16, duration: 0.6, ease: 'power2.out' }, a0 + 0.35);
+    tl.to(c, { ...COACH_POSES.stand, rot: 0, trail: 0, capeStream: 0.25, lookX: -0.4, duration: 0.3, ease: 'back.out(1.8)' }, a0 + 0.85);
+    // …peeks in: she's still asleep. A soft, fond smile.
+    tl.to(c, { ...COACH_POSES.peek, x: 866, rot: -8, handOpenL: 1, lookX: -1, lookY: 0.4, turn: -0.5, mSmile: 0, mProud: 1, lid: 0.25, duration: 0.45, ease: 'sine.inOut' }, a0 + 1.1);
+    // "Shh…" — finger to his lips, a look to us.
+    tl.to(c, { ...COACH_POSES.shh, x: 874, rot: 0, handOpenL: 0, handPointR: 1, lookX: 0, lookY: 0, turn: 0.1, lid: 0.1, duration: 0.35, ease: 'sine.inOut' }, a0 + 1.75);
+    // A gentle tap on the glass sends a golden sparkle to her tablet.
+    tl.to(c, { ...COACH_POSES.knock, x: 868, handPointR: 0, handPointL: 1, lookX: -1, lookY: 0.2, turn: -0.4, mProud: 0, mSmile: 1, duration: 0.3, ease: 'sine.inOut' }, a0 + 2.3);
+    tl.to(c, { foreL: -8, duration: 0.1, yoyo: true, repeat: 1 }, a0 + 2.5);
+    tl.fromTo(sp, { x: 846, y: 470, o: 0, s: 0.6 }, { o: 1, s: 1.3, duration: 0.12 }, a0 + 2.6);
+    tl.to(sp, { x: 827, y: 478, duration: 0.35, ease: 'sine.inOut' }, a0 + 2.66);
+    tl.to(sp, { o: 0, s: 0.4, duration: 0.14 }, a0 + 2.98);
+    tl.to(c, { ...COACH_POSES.proud, handPointL: 0, lookX: -1, turn: -0.5, mSmile: 0, mProud: 1, duration: 0.4, ease: 'sine.inOut' }, a1 - 0.2);
+
+    // 11 — back outside: he's been waiting. Watching her learn: hand on heart,
+    // proud smile, a slow nod. HOLD.
+    tl.to(c, { ...COACH_POSES.heart, handOpenR: 1, mProud: 1, mSmile: 0, lid: 0.35, head: 4, lookX: -1, turn: -0.5, duration: 0.4, ease: 'sine.inOut' }, o0 + 0.2);
+    tl.to(c, { head: 10, duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, o0 + 0.75);
+    // A knight appears beside him; he notices and taps it.
+    tl.to(k, { scale: 0.15, rot: 0, duration: 0.35, ease: 'back.out(2.2)' }, o0 + 1.2);
+    tl.to(c, { lookX: 1, turn: 0.5, lid: 0, browY: -2.5, mProud: 0, mSmile: 1, handOpenR: 0, duration: 0.2 }, o0 + 1.4);
+    tl.to(c, { ...COACH_POSES.poke, handPointR: 1, duration: 0.22, ease: 'power2.out' }, o0 + 1.55);
+    tl.to(k, { y: 462, rot: 14, duration: 0.12, ease: 'power2.out' }, o0 + 1.75);             // lift
+    tl.to(k, { x: 906, y: 468, rot: 0, duration: 0.14, ease: 'power2.in' }, o0 + 1.87);      // settle
+    tl.fromTo(this.ringState, { r: 2, o: 0.9 }, { r: 70, o: 0, duration: 0.8, ease: 'power2.out' }, o0 + 1.85);
+    tl.to(c, { ...COACH_POSES.proud, handPointR: 0, duration: 0.3 }, o1 + 0.05);
   }
 
   buildFinale(tl) {
@@ -121,27 +158,27 @@ export class CoachScene {
     const [w0] = SCENES.wave;
     const [ch0, ch1] = SCENES.chase;
 
-    // 14 — suddenly pops in from the side, looks straight at you, waves "Hi!".
+    // 15 — pops in from the side, looks straight at you, two big friendly waves.
     tl.set(c, { opacity: 1, handOpenR: 1, mSmile: 1, browY: -3, lookX: 0, lookY: 0, turn: 0 }, w0);
-    tl.fromTo(c, { x: 1.25, rot: -24 }, { x: 0.84, rot: -5, duration: 0.24, ease: 'back.out(1.7)' }, w0);
-    tl.fromTo(c, { foreR: 38 }, { foreR: -16, duration: 0.09, yoyo: true, repeat: 3, ease: 'sine.inOut' }, w0 + 0.12);
+    tl.fromTo(c, { x: 1.28, rot: -22 }, { x: 0.84, rot: -5, duration: 0.4, ease: 'back.out(1.4)' }, w0);
+    tl.fromTo(c, { foreR: 38 }, { foreR: -16, duration: 0.2, yoyo: true, repeat: 3, ease: 'sine.inOut' }, w0 + 0.3);
 
-    // 15 — a real chess knight hops quickly across the bottom of the frame.
-    tl.set(kn, { opacity: 1, scale: 0.85, x: 1.1, y: 0.93 }, ch0);
-    const hops = [0.92, 0.77, 0.62, 0.47, 0.32, 0.16, -0.02, -0.2];
+    // 16 — a real chess knight hops along the bottom of the frame, in front of him.
+    tl.set(kn, { opacity: 1, scale: 0.85, x: 1.12, y: 0.93 }, ch0);
+    const hops = [0.95, 0.8, 0.65, 0.5, 0.35, 0.2, 0.05, -0.12, -0.3];
     hops.forEach((x, i) => {
-      const at = ch0 + 0.02 + i * 0.085;
-      tl.to(kn, { x, duration: 0.085, ease: 'none' }, at);
-      tl.to(kn, { y: 0.85, rot: -12, sy: 1.06, sx: 0.95, duration: 0.042, ease: 'power2.out' }, at);          // lift
-      tl.to(kn, { y: 0.93, rot: 0, sy: 1, sx: 1, duration: 0.043, ease: 'power2.in' }, at + 0.042);           // settle
+      const at = ch0 + 0.05 + i * 0.19;
+      tl.to(kn, { x, duration: 0.19, ease: 'sine.inOut' }, at);
+      tl.to(kn, { y: 0.84, rot: -12, sy: 1.06, sx: 0.95, duration: 0.095, ease: 'power2.out' }, at);           // lift
+      tl.to(kn, { y: 0.93, rot: 0, sy: 1, sx: 1, duration: 0.095, ease: 'power2.in' }, at + 0.095);            // settle
     });
-    // Double-take: (at viewer) → knight → viewer → knight → CHASE.
-    tl.to(c, { lookX: -1, lookY: 0.6, turn: -0.6, head: -9, foreR: 20, browY: -4, mSmile: 0, mO: 1, duration: 0.05 }, ch0 + 0.1);
-    tl.to(c, { lookX: 0, lookY: 0, turn: 0.15, head: 3, browY: -5.5, duration: 0.05 }, ch0 + 0.22);
-    tl.to(c, { lookX: -1, lookY: 0.4, turn: -0.7, head: -10, browY: 0, mO: 0, mSmile: 1, duration: 0.05 }, ch0 + 0.34);
-    tl.set(c, { flipX: -1, handOpenR: 0 }, ch0 + 0.43);
-    tl.to(c, { ...COACH_POSES.fly, rot: -72, lookX: 0, lookY: 0, turn: 0, capeStream: 1, trail: 1, duration: 0.08 }, ch0 + 0.43);
-    tl.to(c, { x: -0.45, y: 0.95, duration: ch1 - ch0 - 0.47, ease: 'power2.in' }, ch0 + 0.45);
+    // Double-take: (at viewer) → knight → viewer → knight → CHASE!
+    tl.to(c, { lookX: -1, lookY: 0.6, turn: -0.6, head: -9, foreR: 20, browY: -4, mSmile: 0, mO: 1, duration: 0.12 }, ch0 + 0.2);
+    tl.to(c, { lookX: 0, lookY: 0, turn: 0.15, head: 3, browY: -5.5, duration: 0.12 }, ch0 + 0.55);
+    tl.to(c, { lookX: -1, lookY: 0.4, turn: -0.7, head: -10, browY: 1, mO: 0, mSmile: 1, duration: 0.12 }, ch0 + 0.9);
+    tl.set(c, { flipX: -1, handOpenR: 0 }, ch0 + 1.18);
+    tl.to(c, { ...COACH_POSES.fly, rot: -72, lookX: 0, lookY: 0, turn: 0, capeStream: 1, trail: 1, duration: 0.15 }, ch0 + 1.18);
+    tl.to(c, { x: -0.45, y: 0.95, duration: ch1 - ch0 - 1.25, ease: 'power2.in' }, ch0 + 1.22);
     tl.set(c, { opacity: 0 }, ch1 - 0.001);
   }
 
@@ -149,10 +186,10 @@ export class CoachScene {
     const { W, H, unit, profile } = this.ctx.responsive;
     const cs = profile.charScale;
     const px = (x, y, s) => ({ x: x * W, y: y * H, s: s * unit * cs });
-    if (t < SCENES.dive[0] + 0.6) {
+    if (t < SCENES.dive[0] + 1.0) {
       const c = this.space.state;
       const by = c.y;
-      c.y = by + Math.sin(time * 3) * 0.004;
+      c.y = by + Math.sin(time * 1.3) * 0.004;
       this.space.apply(this.ctx.spacePlace?.() || px, time);
       c.y = by;
     } else if (this.space.state.opacity !== 0) {
@@ -162,8 +199,11 @@ export class CoachScene {
     if (this.ctx.layers.world.style.visibility !== 'hidden') {
       const c = this.window.state;
       const by = c.y;
-      c.y = by + Math.sin(time * 2.4) * 1.2;
+      c.y = by + Math.sin(time * 1.4) * 0.6;
       this.window.apply(null, time);
+      const sp = this.sparkState;
+      this.spark.setAttribute('transform', `translate(${sp.x.toFixed(2)} ${sp.y.toFixed(2)}) scale(${sp.s.toFixed(3)})`);
+      this.spark.setAttribute('opacity', sp.o.toFixed(3));
       c.y = by;
       this.windowKnight.apply(null);
       this.ring.setAttribute('r', this.ringState.r.toFixed(2));

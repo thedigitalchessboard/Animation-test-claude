@@ -43,21 +43,20 @@ export class FinalBrandScene {
 
   build(tl) {
     const [b0, b1] = SCENES.brand;
-    const [g0, g1] = SCENES.tagline;
+    const [g0] = SCENES.tagline;
     const s = this.s;
     tl.set(this.ctx.layers.brand, { autoAlpha: 0 }, 0);
     tl.set(this.ctx.layers.brand, { autoAlpha: 1 }, b0);
-    tl.to(s, { scrim: 1, duration: 0.6, ease: 'power1.inOut' }, b0);
-    tl.to(s, { halo: 1, duration: 0.3, ease: 'power2.in' }, b0 + 0.2);
-    tl.to(s, { opacity: 1, duration: 0.12 }, b0 + 0.22);
-    tl.to(s, { reveal: 1, duration: 0.5, ease: 'power2.out' }, b0 + 0.24);
-    tl.to(s, { blur: 0, bright: 1, scale: 1, duration: 0.55, ease: 'power3.out' }, b0 + 0.24);
-    tl.to(s, { halo: 0.45, duration: 0.5, ease: 'power2.out' }, b0 + 0.55);
-    tl.to(s, { shine: 1.6, duration: 0.55, ease: 'power2.inOut' }, b1 - 0.2);
+    tl.to(s, { scrim: 1, duration: 0.8, ease: 'sine.inOut' }, b0);
+    tl.to(s, { halo: 1, duration: 0.45, ease: 'power2.in' }, b0 + 0.3);
+    tl.to(s, { opacity: 1, duration: 0.2 }, b0 + 0.4);
+    tl.to(s, { reveal: 1, duration: 0.7, ease: 'power2.out' }, b0 + 0.42);
+    tl.to(s, { blur: 0, bright: 1, scale: 1, duration: 0.8, ease: 'power3.out' }, b0 + 0.42);
+    tl.to(s, { halo: 0.45, duration: 0.7, ease: 'sine.out' }, b0 + 0.85);
+    tl.to(s, { shine: 1.6, duration: 0.8, ease: 'sine.inOut' }, b1 - 0.2);
 
-    this.words.forEach((w, i) => tl.to(w, { y: 0, o: 1, duration: 0.28, ease: 'power3.out' }, g0 + i * 0.1));
-    this.diamonds.forEach((d, i) => tl.to(d, { s: 1, o: 1, duration: 0.24, ease: 'back.out(3)' }, g0 + 0.08 + i * 0.1));
-    this.g1 = g1;
+    this.words.forEach((w, i) => tl.to(w, { y: 0, o: 1, duration: 0.45, ease: 'power3.out' }, g0 + i * 0.15));
+    this.diamonds.forEach((d, i) => tl.to(d, { s: 1, o: 1, duration: 0.35, ease: 'back.out(2.2)' }, g0 + 0.12 + i * 0.15));
   }
 
   /** NDC y of the logo centre, used by the network to aim its light. */
