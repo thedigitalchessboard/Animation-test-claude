@@ -27,9 +27,9 @@ void main(){
   vec3 landC = mix(vec3(0.10, 0.2, 0.42), vec3(0.2, 0.36, 0.68), clamp(ndl, 0.0, 1.0));
   vec3 col = mix(ocean, landC, land);
   col += tex.g * uDots * vec3(0.97, 0.94, 0.86) * (0.1 + 0.26 * day);
-  col *= 0.22 + 0.95 * day;
-  float term = exp(-pow((ndl - 0.04) / 0.1, 2.0));
-  col += vec3(0.98, 0.74, 0.38) * term * 0.16;
+  col *= 0.32 + 0.85 * day;
+  float term = exp(-pow((ndl - 0.12) / 0.09, 2.0));
+  col += vec3(1.0, 0.82, 0.5) * term * 0.09;
   col += vec3(1.0, 0.8, 0.42) * tex.b * (1.0 - day) * 1.4;
   vec3 H = normalize(uSun + V);
   col += vec3(1.0, 0.9, 0.72) * pow(max(dot(N, H), 0.0), 70.0) * (1.0 - land) * 0.55 * day;

@@ -82,6 +82,12 @@ export class CoachScene {
     const c = this.window.state;
     const k = this.windowKnight.state;
     const [o0, o1] = SCENES.outside;
+    const [d0] = SCENES.dive;
+    // End of the dive: he streaks down out of the sky and lands beside her
+    // window (seen as the camera flies in), then waits there, out of shot.
+    tl.set(c, { ...COACH_POSES.dive, x: 930, y: 150, rot: 200, scale: 0.12, trail: 1, capeStream: 1, opacity: 1 }, 0);
+    tl.to(c, { x: 872, y: 486, scale: 0.16, duration: 0.3, ease: 'power2.out' }, d0 + 0.68);
+    tl.to(c, { ...COACH_POSES.proud, rot: 0, trail: 0, capeStream: 0.25, duration: 0.16, ease: 'back.out(2)' }, d0 + 0.86);
     // Watching her learn: proud smile and a nod.
     tl.to(c, { head: 8, duration: 0.12, yoyo: true, repeat: 1, ease: 'sine.inOut' }, o0 + 0.42);
     tl.to(c, { lid: 0.35, duration: 0.1 }, o0 + 0.4);
