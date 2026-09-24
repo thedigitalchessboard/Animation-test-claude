@@ -1,0 +1,223 @@
+/* The Digital Chessboard — cinematic animation. All selectors are prefixed
+   with .tdc- so the component never collides with the host site's styles. */
+
+.tdc-cinematic {
+  --tdc-navy: #0B1E3D;
+  --tdc-navy-deep: #050D20;
+  --tdc-ivory: #F7F5F0;
+  --tdc-gold: #D8B15E;
+  --tdc-gold-light: #F2D892;
+  --tdc-aspect: 16 / 9;
+  --tdc-max-height: 88vh;
+  --tdc-radius: 0px;
+  --tdc-font: "Montserrat", "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--tdc-aspect);
+  max-height: var(--tdc-max-height);
+  overflow: hidden;
+  border-radius: var(--tdc-radius);
+  background: var(--tdc-navy-deep);
+  isolation: isolate;
+  contain: layout paint;
+  color: var(--tdc-ivory);
+}
+@media (max-width: 1023px) { .tdc-cinematic { --tdc-aspect: 4 / 3; } }
+@media (max-width: 639px)  { .tdc-cinematic { --tdc-aspect: 4 / 5; --tdc-max-height: 86vh; } }
+
+.tdc-cinematic .tdc-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* nebula backdrop behind the transparent WebGL canvas */
+  background:
+    radial-gradient(60% 55% at 72% 30%, rgba(44, 91, 196, .22), transparent 70%),
+    radial-gradient(45% 50% at 18% 75%, rgba(26, 58, 120, .35), transparent 70%),
+    radial-gradient(35% 30% at 85% 85%, rgba(216, 177, 94, .06), transparent 70%),
+    linear-gradient(180deg, #040A1A 0%, #07132B 60%, #0B1E3D 100%);
+}
+
+.tdc-cinematic .tdc-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.tdc-cinematic .tdc-layer--webgl canvas { display: block; width: 100%; height: 100%; }
+.tdc-cinematic svg.tdc-layer { overflow: hidden; }
+
+/* fly-through clouds */
+.tdc-cinematic .tdc-layer--clouds { visibility: hidden; overflow: hidden; }
+.tdc-cinematic .tdc-cloud {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100px; height: 100px;
+  transform-origin: 0 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side at 40% 45%, rgba(255, 255, 255, .95), rgba(255, 255, 255, .55) 45%, rgba(236, 240, 250, 0) 100%),
+    radial-gradient(closest-side at 68% 62%, rgba(214, 224, 244, .8), rgba(214, 224, 244, 0) 100%);
+  will-change: transform, opacity;
+  opacity: 0;
+}
+.tdc-cinematic .tdc-cloud:nth-child(3n) {
+  background:
+    radial-gradient(closest-side at 50% 50%, rgba(255, 244, 222, .95), rgba(250, 226, 190, .45) 55%, rgba(250, 226, 190, 0) 100%);
+}
+.tdc-cinematic .tdc-haze {
+  position: absolute; inset: 0; opacity: 0;
+  background: radial-gradient(120% 90% at 50% 50%, rgba(250, 247, 240, .96), rgba(214, 226, 248, .9) 60%, rgba(160, 182, 226, .85));
+}
+
+/* tablet screen (scene 08) */
+.tdc-cinematic .tdc-layer--tablet {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(70% 70% at 50% 50%, rgba(221, 235, 255, .16), rgba(5, 13, 32, .96) 72%), #050D20;
+}
+.tdc-cinematic .tdc-tablet-device {
+  width: min(88%, 150vh);
+  height: min(84%, 84vw);
+  transform-origin: 50% 50%;
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, .55)) drop-shadow(0 0 40px rgba(190, 215, 255, .18));
+}
+
+/* brand reveal (scenes 12–13) */
+.tdc-cinematic .tdc-layer--brand { display: grid; place-items: center; }
+.tdc-cinematic .tdc-brand__scrim {
+  position: absolute; inset: 0; opacity: 0;
+  background: radial-gradient(42% 48% at 50% 44%, rgba(5, 13, 32, .78), rgba(5, 13, 32, .35) 60%, rgba(5, 13, 32, 0) 100%);
+}
+.tdc-cinematic .tdc-brand__stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 2.2cqh, 26px);
+  transform: translateY(-9%);
+}
+.tdc-cinematic .tdc-brand__logo {
+  position: relative;
+  height: min(46cqh, 60cqw);
+  max-width: 80cqw;
+  transform-origin: 50% 50%;
+}
+.tdc-cinematic .tdc-stage { container-type: size; }
+.tdc-cinematic .tdc-brand__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+  user-select: none;
+}
+.tdc-cinematic .tdc-brand__halo {
+  position: absolute; inset: -30%;
+  opacity: 0;
+  background: radial-gradient(closest-side, rgba(242, 216, 146, .55), rgba(242, 216, 146, .12) 45%, rgba(242, 216, 146, 0) 75%);
+  mix-blend-mode: screen;
+}
+.tdc-cinematic .tdc-brand__shine {
+  --shine: -60%;
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent calc(var(--shine) - 18%), rgba(255, 244, 214, .95) var(--shine), transparent calc(var(--shine) + 18%));
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  mix-blend-mode: screen;
+}
+.tdc-cinematic .tdc-brand__tagline {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: .55em;
+  font-family: var(--tdc-font);
+  font-weight: 500;
+  font-size: clamp(14px, 3.4cqh, 30px);
+  letter-spacing: .09em;
+  color: var(--tdc-ivory);
+  text-shadow: 0 2px 18px rgba(5, 13, 32, .8);
+  white-space: nowrap;
+}
+.tdc-cinematic .tdc-brand__tagline .tdc-w { display: inline-block; opacity: 0; }
+.tdc-cinematic .tdc-brand__tagline .tdc-d {
+  display: inline-block;
+  color: var(--tdc-gold);
+  font-size: .62em;
+  opacity: 0;
+  text-shadow: 0 0 12px rgba(242, 216, 146, .8);
+}
+@container (max-aspect-ratio: 1/1) {
+  .tdc-cinematic .tdc-brand__tagline { font-size: clamp(12px, 4.3cqw, 22px); letter-spacing: .04em; gap: .4em; }
+  .tdc-cinematic .tdc-brand__logo { height: min(40cqh, 74cqw); }
+}
+
+/* post-processing */
+.tdc-cinematic .tdc-fx-flash { position: absolute; inset: 0; background: #FFF8E6; opacity: 0; mix-blend-mode: screen; }
+.tdc-cinematic .tdc-fx-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 95% at 50% 50%, transparent 60%, rgba(2, 6, 18, .55) 100%);
+}
+.tdc-cinematic .tdc-fx-grain {
+  position: absolute; inset: -50%;
+  opacity: .05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+}
+.tdc-cinematic .tdc-stage[data-profile="mobile"] .tdc-fx-grain { display: none; }
+
+/* controls — icon only, unobtrusive */
+.tdc-cinematic .tdc-controls {
+  position: absolute;
+  right: clamp(8px, 1.6vw, 18px);
+  bottom: clamp(8px, 1.6vw, 18px);
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.tdc-cinematic.tdc-is-ready .tdc-controls { opacity: .55; }
+.tdc-cinematic.tdc-is-ready:hover .tdc-controls,
+.tdc-cinematic .tdc-controls:focus-within,
+.tdc-cinematic.tdc-is-ended .tdc-controls { opacity: 1; }
+.tdc-cinematic .tdc-btn {
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 1px solid rgba(242, 216, 146, .45);
+  border-radius: 50%;
+  background: rgba(5, 13, 32, .55);
+  color: var(--tdc-ivory);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.tdc-cinematic .tdc-btn[hidden] { display: none; }
+.tdc-cinematic .tdc-btn:hover { background: rgba(216, 177, 94, .25); border-color: var(--tdc-gold); }
+.tdc-cinematic .tdc-btn:focus-visible { outline: 2px solid var(--tdc-gold-light); outline-offset: 2px; }
+.tdc-cinematic .tdc-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+.tdc-cinematic .tdc-sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* WebGL unavailable → static brand frame */
+.tdc-cinematic .tdc-fallback {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+}
+.tdc-cinematic .tdc-fallback img { height: 58%; max-width: 80%; object-fit: contain; border-radius: 8px; }
+.tdc-cinematic .tdc-fallback .tdc-w,
+.tdc-cinematic .tdc-fallback .tdc-d { opacity: 1; }
