@@ -70,6 +70,7 @@ export function createGirl() {
     <g fill="${IVORY}" opacity=".8">${STAR(-22, -100)}${STAR(18, -72)}${STAR(-12, -40, 0.8)}${STAR(24, -26, 0.9)}${STAR(-28, -14, 0.7)}${STAR(8, -118, 0.7)}</g>
     <circle cx="0" cy="-104" r="2.6" fill="${IVORY}"/><circle cx="0" cy="-80" r="2.6" fill="${IVORY}"/><circle cx="0" cy="-56" r="2.6" fill="${IVORY}"/>
     <path d="M-9 -157 L9 -157 L10 -138 Q0 -133 -10 -138 Z" fill="${SKIN_SHADE}"/>
+    <path d="M-9.5 -156 Q0 -148 9.5 -156 L9.5 -149 Q0 -143 -9.5 -149 Z" fill="#A86B48" opacity=".5"/>
     <path d="M-17 -142 Q-24 -124 -5 -123 Q1 -130 0 -139 Z M17 -142 Q24 -124 5 -123 Q-1 -130 0 -139 Z" fill="${IVORY}"/>
     <g data-part="held" opacity="0">
       <rect x="-60" y="-126" width="120" height="80" rx="9" fill="#13244A" stroke="#2C4A86" stroke-width="2.5"/>
@@ -89,6 +90,8 @@ export function createGirl() {
       <ellipse cx="33" cy="-246" rx="7" ry="4.5" transform="rotate(38 33 -246)" fill="${GOLD}"/>
       <ellipse cx="-41" cy="-200" rx="6" ry="9" fill="${SKIN_SHADE}"/><ellipse cx="41" cy="-200" rx="6" ry="9" fill="${SKIN_SHADE}"/>
       <path d="M-41 -208 Q-42 -176 -24 -162 Q-12 -154 0 -154 Q12 -154 24 -162 Q42 -176 41 -208 Q40 -246 0 -248 Q-40 -246 -41 -208 Z" fill="url(#${id}-skin)"/>
+      <path d="M24 -206 Q40 -186 22 -162 Q36 -178 37 -200 Z" fill="${SKIN_SHADE}" opacity=".35"/>
+      <ellipse cx="-22" cy="-192" rx="6" ry="3.4" fill="#FFF1E4" opacity=".25"/>
       <g data-part="features">
         ${[-16, 16].map((x, i) => `
         <g transform="translate(${x} -200)">
@@ -165,7 +168,8 @@ export function createGirl() {
     setOpacity(p.held, s.held);
     setAttr(p.held, 'transform', `translate(${fmt(s.heldX)} ${fmt(s.heldY)}) rotate(${fmt(s.heldRot)} 0 -86)`);
     setOpacity(p.spill, s.spill);
-    const tw = s.sparkle * (0.85 + 0.15 * Math.sin(t * 22));
+    // Eye twinkles hide behind the lids when she blinks.
+    const tw = s.sparkle * (0.85 + 0.15 * Math.sin(t * 22)) * Math.max(0, 1 - s.lid * 1.6);
     // Tiny twinkles sit on the big catchlight (upper-right of each iris).
     const ox = s.lookX * 2.4, oy = s.lookY * 2;
     setAttr(p.sparkle0, 'transform', `translate(${fmt(2.3 + ox)} ${fmt(-3 + oy)}) rotate(${fmt(t * 90)}) scale(${fmt(tw)})`);

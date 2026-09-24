@@ -135,6 +135,15 @@ export class GlobalNetworkScene {
       map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending, opacity: 0,
     }));
     this.flash.renderOrder = 11;
+    this.pieces.forEach((sp) => {
+      const b = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: this.flash.material.map, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0,
+      }));
+      b.position.copy(sp.position);
+      b.scale.set(0.0001, 0.0001, 1);
+      sp.userData.burst = { s: 0.02, o: 0, sprite: b };
+      this.earth.spin.add(b);
+    });
     this.flash.userData.s = { size: 0.01 };
     ctx.three.scene.add(this.flash);
     this.tmp = new THREE.Vector3();
@@ -147,18 +156,22 @@ export class GlobalNetworkScene {
 
     // 02: a constellation of early connections.
     this.early.forEach((m, i) => {
-      tl.fromTo(m.material.uniforms.uProgress, { value: 0 }, { value: 1, duration: 0.42, ease: 'power2.out' }, n0 - 0.05 + i * 0.035);
+      tl.fromTo(m.material.uniforms.uProgress, { value: 0 }, { value: 1, duration: 0.6, ease: 'sine.inOut' }, n0 + i * 0.05);
     });
     tl.to(this.early.map((m) => m.material.uniforms.uAlpha), { value: 0.35, duration: 0.6 }, n1 + 0.4);
 
     // 11: the network spreads out from the girl's home to the whole world.
     const sorted = [...this.global].sort((a, b) => a.userData.len - b.userData.len);
     sorted.forEach((m, i) => {
-      tl.fromTo(m.material.uniforms.uProgress, { value: 0 }, { value: 1, duration: 0.5 + m.userData.len * 0.2, ease: 'power2.out' }, r0 + 0.5 + i * 0.03);
+      tl.fromTo(m.material.uniforms.uProgress, { value: 0 }, { value: 1, duration: 0.5 + m.userData.len * 0.2, ease: 'power2.out' }, r0 + 0.45 + i * 0.025);
     });
     tl.to(this.early.map((m) => m.material.uniforms.uAlpha), { value: 0.8, duration: 0.4 }, r0 + 0.8);
+    // Each piece rises out of its connection point with a small burst of light.
     this.pieces.forEach((sp, i) => {
-      tl.fromTo(sp.userData.pop, { s: 0 }, { s: 1, duration: 0.42, ease: 'back.out(2.2)' }, r0 + 0.85 + i * 0.12);
+      const at = r0 + 0.6 + i * 0.1;
+      tl.fromTo(sp.userData.pop, { s: 0 }, { s: 1, duration: 0.45, ease: 'back.out(2.2)' }, at);
+      tl.fromTo(sp.userData.burst, { s: 0.02, o: 0 }, { s: 0.42, o: 1, duration: 0.16, ease: 'power2.out' }, at - 0.04);
+      tl.to(sp.userData.burst, { s: 0.6, o: 0, duration: 0.35, ease: 'power2.in' }, at + 0.12);
     });
 
     // 12: everything gathers into light at the logo.
@@ -180,6 +193,9 @@ export class GlobalNetworkScene {
     this.pieces.forEach((sp) => {
       const k = sp.userData.pop.s;
       sp.scale.set(ps * k + 0.0001, ps * k + 0.0001, 1);
+      const b = sp.userData.burst;
+      b.sprite.scale.set(b.s, b.s, 1);
+      b.sprite.material.opacity = b.o;
     });
 
     // Target = the point in front of the camera behind the logo centre.

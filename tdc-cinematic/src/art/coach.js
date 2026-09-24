@@ -104,12 +104,16 @@ export function createCoach({ gold = GOLD } = {}) {
       <path d="${PIECE_PATHS.knight}" transform="scale(.19) translate(-50 -66)" fill="${gold}"/>
     </g>
     <path d="M-9 -157 L9 -157 L10 -138 Q0 -132 -10 -138 Z" fill="${SKIN_SHADE}"/>
+    <path d="M-9.5 -154 Q0 -146 9.5 -154 L9.5 -147 Q0 -141 -9.5 -147 Z" fill="#6E3F29" opacity=".55"/>
     <path d="M-20 -141 Q0 -127 20 -141 L16 -151 Q0 -139 -16 -151 Z" fill="${IVORY}"/>
     <g data-part="armL">${arm('L')}</g>
     <g transform="scale(-1 1)"><g data-part="armR">${arm('R')}</g></g>
     <g data-part="head">
       <ellipse cx="-24" cy="-186" rx="5" ry="8" fill="${SKIN}"/><ellipse cx="24" cy="-186" rx="5" ry="8" fill="${SKIN}"/>
       <path d="M-24 -196 Q-25 -170 -16 -158 Q-8 -148 0 -148 Q8 -148 16 -158 Q25 -170 24 -196 Q23 -222 0 -224 Q-23 -222 -24 -196 Z" fill="url(#${id}-skin)"/>
+      <ellipse cx="0" cy="-208" rx="22" ry="6.5" fill="${SKIN_SHADE}" opacity=".4"/>
+      <path d="M13 -196 Q22 -178 12 -158 Q20 -170 21 -190 Z" fill="${SKIN_SHADE}" opacity=".35"/>
+      <ellipse cx="-13" cy="-178" rx="4.5" ry="2.6" fill="#FFE9D6" opacity=".22"/>
       <path d="M-25 -190 Q-28 -222 -6 -230 Q18 -236 27 -212 Q29 -200 25 -188 Q23 -204 16 -210 Q2 -214 -10 -210 Q-20 -204 -25 -190 Z" fill="${HAIR}"/>
       <path d="M-24.5 -196 L-22.5 -181 L-20.5 -196 Z M24.5 -196 L22.5 -181 L20.5 -196 Z" fill="${HAIR}"/>
       <g data-part="features">
@@ -209,8 +213,9 @@ export const COACH_POSES = {
   // Superhero flight: body is rotated by the caller; here the leading arm
   // reaches past the head, the other tucks back, knees slightly bent.
   fly: { armL: 170, foreL: 5, armR: 25, foreR: -20, legL: 4, shinL: 8, legR: -2, shinR: 18, head: -62, body: 0 },
-  // Screeching halt: knees up, arms flung out.
-  brake: { armL: 70, foreL: 60, armR: 80, foreR: 50, legL: 30, shinL: -60, legR: 22, shinR: -55, head: 0, body: 0 },
+  // Screeching halt: knees up, arms back for balance (momentum, not panic).
+  brake: { armL: 38, foreL: 38, armR: 42, foreR: 30, legL: 24, shinL: -50, legR: 16, shinR: -40, head: 0, body: 0 },
+  relieved: { armL: 14, foreL: -6, armR: 14, foreR: -6, legL: 4, shinL: -4, legR: 3, shinR: -3, head: 4, body: 0 },
   // Sheepish apology: one open palm raised, other hand scratching the back of his head.
   sorry: { armL: 55, foreL: 95, armR: 140, foreR: 115, legL: 6, shinL: -10, legR: 2, shinR: -6, head: -6, body: 0 },
   dive: { armL: 176, foreL: 0, armR: 176, foreR: 0, legL: 2, shinL: 6, legR: 2, shinR: 6, head: 0, body: 0 },

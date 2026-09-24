@@ -3,7 +3,7 @@
 A silent, 14-second, real-time (Three.js + GSAP + SVG) animated story for **The Digital Chessboard** homepage.
 Everything the animation needs lives in this one folder, so it can be copied into any existing website.
 
-- **Duration:** 14.0 s. The timeline is capped: it can never run past 14.9 s. Timing follows the wall clock, so a slow device drops frames instead of stretching the film.
+- **Duration:** 14.7 s. The timeline is capped: it can never run past 14.9 s. Timing follows the wall clock, so a slow device drops frames instead of stretching the film.
 - **No audio, no subtitles, no dialogue.** The only text is the brand lockup: the official logo plus *Making ◆ Champions ◆ Worldwide*.
 - **No build step, no CDN.** Three.js and GSAP are vendored in `vendor/` as small ES modules.
 - **Lazy:** until the section comes near the viewport, only a 3 KB script loads.
@@ -167,23 +167,23 @@ To swap a logo, replace the file under the same name, or pass new paths in `asse
 
 | # | Time (s) | Beat |
 |---|---|---|
-| 01 | 0.0–1.2 | Deep space → Earth; glowing student points appear |
-| 02 | 1.2–1.8 | Points connect like a constellation |
-| 03 | 1.8–2.8 | Coach Knight (a human coach with a cape and a chest emblem) flies across |
-| 04 | 2.8–3.7 | Bumps the astronaut's floating knight → surprised → sheepish apology → astronaut smiles |
-| 05 | 3.7–4.9 | Dive: space → atmosphere → clouds → city → house → through the window |
-| 06 | 4.9–6.3 | The girl wakes up sleepy and notices the glowing tablet |
-| 07 | 6.3–7.5 | Sits up, grabs the tablet, taps it, the screen lights up |
-| 08 | 7.5–8.4 | Official logo → live class; a knight lifts, moves, and settles |
-| 09 | 8.4–9.2 | Close-up: her eyes light up (catchlights, screen reflection, sparkle, smile) |
-| 10 | 9.2–10.1 | Camera pulls back out through the window; the coach smiles proudly and taps a knight |
-| 11 | 10.1–11.9 | Pull back to Earth; the network spreads from her home; six chess pieces rise |
-| 12 | 11.9–12.7 | The network converges into light → official logo reveal |
-| 13 | 12.7–13.2 | *Making ◆ Champions ◆ Worldwide* |
-| 14 | 13.05–13.5 | The coach pops in and waves "Hi!" (no text) |
-| 15 | 13.45–14.0 | A knight hops past → double-take → chase → exit. End. |
+| 01 | 0.0–1.5 | Slow approach out of deep space; glowing student points light up the Earth |
+| 02 | 1.2–2.0 | Points connect like a constellation while the camera breathes |
+| 03 | 2.0–2.8 | Coach Knight (a human coach with a cape and a chest emblem) flies across, with a wink at the camera |
+| 04 | 2.8–4.35 | He clips the astronaut's floating knight → brakes → **surprised (held)** → **apologetic grimace, raised palm, little bow (held)** → the astronaut grins and nods → relief → back to his tablet game |
+| 05 | 4.35–5.45 | Dive: space → atmosphere → clouds → city → he lands beside her window → through the window |
+| 06 | 5.45–6.85 | **Quiet sleeping room (held)** → she stirs, yawns → camera pushes in → **notices the tablet: eyes wide, curious (held)** |
+| 07 | 6.85–7.95 | Sits up, scoots over, grabs the tablet, taps it; the screen lights her face and the room dims around her |
+| 08 | 7.95–8.95 | An iris opens through the screen: **official logo (held)** → live class; the coach waves, points, a knight lifts, moves, and settles |
+| 09 | 8.95–9.85 | **Held close-up:** catchlights, screen reflection, tiny sparkle, big smile, a happy blink |
+| 10 | 9.85–10.9 | Camera pulls back out through the window; **the coach smiles proudly and nods (held)**, a knight appears, he taps it |
+| 11 | 10.9–12.3 | Pull back to Earth; the network spreads from her home; six chess pieces rise from connection points with bursts of light |
+| 12 | 12.3–13.0 | The network converges into light → official logo reveal |
+| 13 | 13.0–13.4 | *Making ◆ Champions ◆ Worldwide*, then **the lockup rests on its own (held)** |
+| 14 | 13.6–14.0 | The coach pops in from the side, looks at you, and waves "Hi!" (no text) |
+| 15 | 13.95–14.7 | A knight hops past **in front** of him → looks at the viewer → the knight → the viewer → the knight → chase → exit. End. |
 
-Scenes 14 and 15 overlap the tagline slightly so the double-take reads clearly and the film still ends at 14.0 s. If a timing edit ever pushes the film past `HARD_MAX_DURATION` (14.9 s), `TimelineManager` time-scales it back down and logs a warning.
+The transitions are quick and continuous, and the emotional beats (marked **held**) get time to land. If a timing edit ever pushes the film past `HARD_MAX_DURATION` (14.9 s), `TimelineManager` time-scales it back down and logs a warning.
 
 ---
 

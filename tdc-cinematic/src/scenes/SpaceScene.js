@@ -132,39 +132,50 @@ export class SpaceScene {
     this.pan = { x: 0.6, fade: 1 };
     this.zoom = { z: 1, fx: 0.7, fy: 0.46 };
     // Coach Knight shares the overlay camera zoom (but not the background pan).
-    ctx.spacePlace = () => this.makePlace(0);
-    Object.assign(this.astronaut.state, { x: 0.8, y: 0.56, scale: 1.25 });
+    // On portrait screens the pair is spread apart a little so they never overlap.
+    ctx.spacePlace = () => this.makePlace(ctx.responsive.portrait ? -0.07 : 0);
+    Object.assign(this.astronaut.state, { x: 0.8, y: 0.56, scale: 1.32 });
   }
 
   build(tl) {
     const [c0, c1] = SCENES.coachFly;
-    const [k0] = SCENES.comedy;
+    const [k0, k1] = SCENES.comedy;
     const [d0] = SCENES.dive;
     const a = this.astronaut.state;
-    const bump = k0 + 0.07;
-
-    // The camera "follows the coach": the astronaut drifts in from the right.
-    tl.fromTo(this.pan, { x: 0.62 }, { x: 0, duration: c1 - c0 + 0.1, ease: 'power2.out' }, c0 + 0.05);
-    tl.to(this.pan, { x: -0.06, duration: 0.8, ease: 'sine.inOut' }, k0 + 0.1);
-    tl.to(this.pan, { fade: 0, duration: 0.35, ease: 'power1.in' }, d0 + 0.05);
-
-    // Astronaut: peaceful → looks up at the commotion → smiles → back to chess.
-    tl.to(a, { lookX: -1, lookY: -0.5, lid: 0, browY: -1.5, duration: 0.12 }, bump + 0.05);
-    tl.to(a, { head: -6, duration: 0.2, ease: 'power2.out' }, bump + 0.05);
-    tl.to(a, { mSoft: 0, mGrin: 1, duration: 0.1 }, bump + 0.42);
-    tl.to(a, { head: 6, duration: 0.12, yoyo: true, repeat: 1, ease: 'sine.inOut' }, bump + 0.46);
-    tl.to(a, { lookX: 0, lookY: 0.8, lid: 0.25, browY: 0, head: 0, duration: 0.18 }, bump + 0.72);
-
-    // Floating pieces idle; the knight gets bumped and tumbles away.
-    const kn = this.knight.state;
-    tl.set(kn, { x: 0.585, y: 0.4, rot: -10, scale: 0.5, opacity: 1 }, 0);
-    tl.to(kn, { x: 0.93, y: 0.12, rot: 560, scale: 0.42, duration: 1.3, ease: 'power2.out' }, bump);
-    tl.set(this.pawn.state, { x: 0.9, y: 0.27, rot: 14, scale: 0.4 }, 0);
-    tl.set(this.rook.state, { x: 0.94, y: 0.78, rot: -22, scale: 0.36 }, 0);
-    // Camera leans in on the comedy so faces read clearly, then eases back.
-    tl.fromTo(this.zoom, { z: 1 }, { z: 1.4, duration: 0.3, ease: 'power2.out' }, bump + 0.02);
-    tl.to(this.zoom, { z: 1, duration: 0.35, ease: 'power2.inOut' }, d0 - 0.05);
+    const bump = k0 + 0.05;
     this.bumpTime = bump;
+
+    // The camera follows the coach, so the astronaut drifts into frame.
+    tl.fromTo(this.pan, { x: 0.62 }, { x: 0, duration: c1 - c0 + 0.1, ease: 'power2.out' }, c0 + 0.02);
+    tl.to(this.pan, { x: -0.05, duration: k1 - k0, ease: 'sine.inOut' }, k0 + 0.1);
+    tl.to(this.pan, { fade: 0, duration: 0.35, ease: 'power1.in' }, d0 + 0.08);
+
+    // Peacefully playing: little taps on the tablet (it shows the TDC logo).
+    const tap = (at) => tl.to(a, { tap: 1, duration: 0.07, yoyo: true, repeat: 1, ease: 'power1.inOut' }, at);
+    [c0 + 0.35, c0 + 0.62].forEach(tap);
+
+    // The commotion: startled look → watches his knight float away →
+    // looks at the coach → warm grin and a "no worries" nod → back to his game.
+    tl.to(a, { lookX: -1, lookY: -0.4, lid: 0, browY: -2, head: -6, duration: 0.1, ease: 'power2.out' }, bump + 0.05);
+    tl.to(a, { lookX: 0.8, lookY: -1, head: 5, duration: 0.18, ease: 'sine.inOut' }, bump + 0.28);
+    tl.to(a, { lookX: -1, lookY: -0.2, head: -4, browY: -1, duration: 0.16, ease: 'sine.inOut' }, bump + 0.62);
+    tl.to(a, { mSoft: 0, mGrin: 1, lid: 0.2, browY: 0, duration: 0.14 }, bump + 0.9);
+    tl.to(a, { head: 7, duration: 0.13, yoyo: true, repeat: 3, ease: 'sine.inOut' }, bump + 0.95);
+    tl.to(a, { lookX: 0, lookY: 0.8, lid: 0.25, head: 0, duration: 0.22, ease: 'sine.inOut' }, bump + 1.28);
+    tl.to(a, { mGrin: 0.35, mSoft: 0.65, duration: 0.2 }, bump + 1.3);
+    tap(bump + 1.42);
+
+    // His floating chess set; the knight gets bumped and tumbles away.
+    const kn = this.knight.state;
+    tl.set(kn, { x: 0.63, y: 0.43, rot: -10, scale: 0.52, opacity: 1 }, 0);
+    tl.to(kn, { x: 0.9, y: 0.16, rot: 420, scale: 0.44, duration: 1.1, ease: 'power2.out' }, bump);
+    tl.to(kn, { x: 1.12, y: -0.08, rot: 640, duration: 0.8, ease: 'power1.in' }, bump + 1.1);
+    tl.set(this.pawn.state, { x: 0.9, y: 0.3, rot: 14, scale: 0.4 }, 0);
+    tl.set(this.rook.state, { x: 0.93, y: 0.78, rot: -22, scale: 0.36 }, 0);
+
+    // The camera leans in gently for the comedy, then settles back for the dive.
+    tl.fromTo(this.zoom, { z: 1 }, { z: 1.5, duration: 0.5, ease: 'sine.inOut' }, bump);
+    tl.to(this.zoom, { z: 1, duration: 0.4, ease: 'sine.inOut' }, k1 - 0.3);
   }
 
   update(t, time) {
@@ -173,11 +184,11 @@ export class SpaceScene {
     const px = this.ctx.three.renderer.getPixelRatio();
     this.starUniforms.uPixel.value = px;
     this.dustUniforms.uPixel.value = px;
-    this.dustUniforms.uAlpha.value = t < 4.4 ? 0.8 : 0.35;
+    this.dustUniforms.uAlpha.value = t < SCENES.dive[0] + 0.1 ? 0.8 : 0.35;
 
-    if (t > 4.5 && t < 10) return; // overlay hidden, nothing to place
+    if (t > SCENES.dive[0] + 0.5 && t < SCENES.reveal[0]) return; // overlay hidden, nothing to place
     const pan = this.pan.x * (this.ctx.responsive.portrait ? 1.4 : 1);
-    const place = this.place = this.makePlace(pan);
+    const place = this.place = this.makePlace(pan + (this.ctx.responsive.portrait ? 0.06 : 0));
     const bob = Math.sin(time * 1.6) * 0.008;
     this.overlayGroup.setAttribute('opacity', this.pan.fade.toFixed(3));
     const a = this.astronaut.state;
@@ -200,8 +211,10 @@ export class SpaceScene {
   /** Pixel placement with the overlay camera (pan + comedy zoom). */
   makePlace(pan = 0) {
     const { W, H, unit, profile } = this.ctx.responsive;
-    const { z, fx, fy } = this.zoom;
-    const cs = profile.charScale;
+    const { fx, fy } = this.zoom;
+    const portrait = this.ctx.responsive.portrait;
+    const z = portrait ? 1 + (this.zoom.z - 1) * 0.35 : this.zoom.z;
+    const cs = profile.charScale * (portrait ? 0.85 : 1);
     return (x, y, s) => ({
       x: ((x + pan - fx) * z + fx) * W,
       y: ((y - fy) * z + fy) * H,

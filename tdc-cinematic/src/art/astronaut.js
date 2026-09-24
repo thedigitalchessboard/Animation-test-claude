@@ -2,7 +2,7 @@
 // official TDC logo (supplied asset, displayed as-is).
 // Local coords: torso centre around (0,-50); helmet centre (0,-150).
 
-import { group, parts, uid } from './svg.js';
+import { group, parts, uid, setAttr, setOpacity, fmt } from './svg.js';
 import { Rig } from './rig.js';
 import { PIECE_PATHS } from './pieces.js';
 
@@ -46,7 +46,9 @@ export function createAstronaut({ logoUrl }) {
         <image href="${logoUrl}" x="-33" y="-63" width="66" height="38" preserveAspectRatio="xMidYMid meet"/>
       </g>
       <circle cx="-15" cy="-20" r="9" fill="#F4F6FA" stroke="#9AA6BB" stroke-width="1.4"/>
-      <circle cx="15" cy="-20" r="9" fill="#F4F6FA" stroke="#9AA6BB" stroke-width="1.4"/>
+      <circle data-part="tapGlow" cx="14" cy="-40" r="7" fill="#DDEBFF" opacity="0"/>
+      <g data-part="gloveR"><circle cx="15" cy="-20" r="9" fill="#F4F6FA" stroke="#9AA6BB" stroke-width="1.4"/>
+        <path d="M15 -27 L15 -33" stroke="#F4F6FA" stroke-width="5" stroke-linecap="round"/></g>
     </g>
     <g data-part="head">
       <rect x="-24" y="-112" width="48" height="12" rx="4" fill="#C7CEDA"/>
@@ -79,7 +81,7 @@ export function createAstronaut({ logoUrl }) {
   </g>`;
   const root = group(markup, { class: 'tdc-astronaut' });
   const p = parts(root);
-  return new Rig({
+  const rig = new Rig({
     root,
     parts: p,
     joints: { head: [0, -108], body: [0, -40], tablet: [0, -44] },
@@ -91,6 +93,12 @@ export function createAstronaut({ logoUrl }) {
       turnShift: 3,
       maxLook: [1, 1.2],
     },
-    state: { lookY: 0.8, lid: 0.25, mSoft: 1, mGrin: 0 },
+    state: { lookY: 0.8, lid: 0.25, mSoft: 1, mGrin: 0, tap: 0 },
   });
+  // Tapping the tablet: the glove's index finger dips onto the screen.
+  rig.onApply((s) => {
+    setAttr(p.gloveR, 'transform', `translate(${fmt(-2 * s.tap)} ${fmt(-14 * s.tap)})`);
+    setOpacity(p.tapGlow, s.tap * 0.8);
+  });
+  return rig;
 }

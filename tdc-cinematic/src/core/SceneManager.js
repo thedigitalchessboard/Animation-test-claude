@@ -17,7 +17,7 @@ import { FinalBrandScene } from '../scenes/FinalBrandScene.js';
 
 // Frame shown for prefers-reduced-motion: Earth + network + pieces + logo +
 // tagline + Coach Knight waving.
-const STILL_TIME = 13.36;
+const STILL_TIME = SCENES.wave[0] + 0.26;
 
 export class SceneManager {
   constructor(container, options, a11y) {
@@ -121,9 +121,16 @@ export class SceneManager {
     const brand = div('tdc-layer--brand');
     const front = createSvgRoot('tdc-layer tdc-layer--front');
     stage.appendChild(front);
+    // A soft warm rim glow for Coach Knight in the space and finale layers.
+    const glowId = `tdc-glow-${Math.random().toString(36).slice(2, 8)}`;
+    for (const svg of [overlay, front]) {
+      svg.innerHTML = `<defs><filter id="${glowId}-${svg === front ? 'f' : 'o'}" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#F2D892" flood-opacity=".32"/>
+        <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#020816" flood-opacity=".45"/></filter></defs>`;
+    }
     const fx = div('tdc-layer--fx');
     fx.innerHTML = '<div class="tdc-fx-flash"></div><div class="tdc-fx-vignette"></div><div class="tdc-fx-grain"></div>';
-    return { webgl, canvas, world, clouds, overlay, tablet, brand, front, fx, flash: fx.firstChild };
+    return { webgl, canvas, world, clouds, overlay, tablet, brand, front, fx, flash: fx.firstChild, glowId };
   }
 
   /** Visibility of whole layers between the WebGL and illustrated parts. */
@@ -141,8 +148,8 @@ export class SceneManager {
     tl.set(L.front, { autoAlpha: 0 }, 0);
     tl.set(L.front, { autoAlpha: 1 }, SCENES.wave[0] - 0.01);
     // Tablet wakes up → soft flash; the knight tap outside → gold flash.
-    tl.fromTo(L.flash, { opacity: 0 }, { opacity: 0.16, duration: 0.06, yoyo: true, repeat: 1 }, t0 + 0.96);
-    tl.fromTo(L.flash, { opacity: 0 }, { opacity: 0.18, duration: 0.08, yoyo: true, repeat: 1 }, o0 + 0.74);
+    tl.fromTo(L.flash, { opacity: 0 }, { opacity: 0.16, duration: 0.08, yoyo: true, repeat: 1 }, t0 + 0.99);
+    tl.fromTo(L.flash, { opacity: 0 }, { opacity: 0.16, duration: 0.08, yoyo: true, repeat: 1 }, o0 + 0.92);
   }
 
   onResize() {

@@ -6,28 +6,32 @@
  * HARD_MAX_DURATION (it time-scales the film down and warns instead).
  */
 
-export const TARGET_DURATION = 14.0;
+export const TARGET_DURATION = 14.7;
 export const HARD_MAX_DURATION = 14.9;
 
 // [start, end] in seconds. Order and beats follow the production brief.
-// The closing gag (wave + knight chase) overlaps the tagline slightly so the
-// double-take reads clearly without pushing the film past 14.0 s.
+//
+// Pacing (v2): the film breathes. Transitions are fast and continuous, while
+// the emotional beats get real holds: the Earth settles, the coach's surprise
+// and apology each linger, the girl's sleepy → curious → excited faces are
+// held long enough to read, the logo + tagline rest alone before the final
+// gag, and the double-take is timed as clear, separate looks.
 export const SCENES = {
-  space:    [0.0, 1.2],   // 01 deep space, Earth, student points
-  network:  [1.2, 1.8],   // 02 points connect
-  coachFly: [1.8, 2.8],   // 03 Coach Knight flies across
-  comedy:   [2.8, 3.7],   // 04 astronaut + bumped knight
-  dive:     [3.7, 4.9],   // 05 space → atmosphere → clouds → city → house
-  bedroom:  [4.9, 6.3],   // 06 girl wakes, notices tablet
-  tablet:   [6.3, 7.5],   // 07 picks up + taps tablet
-  board:    [7.5, 8.4],   // 08 logo → live class, a piece moves
-  eyes:     [8.4, 9.2],   // 09 eyes light up
-  outside:  [9.2, 10.1],  // 10 coach outside the window, taps a knight
-  reveal:   [10.1, 11.9], // 11 pull back to a connected Earth
-  brand:    [11.9, 12.7], // 12 network converges → official logo
-  tagline:  [12.7, 13.2], // 13 Making ◆ Champions ◆ Worldwide
-  wave:     [13.05, 13.5],// 14 coach pops in and waves
-  chase:    [13.45, 14.0],// 15 knight challenge → chase → exit
+  space:    [0.0, 1.5],   // 01 deep space → Earth, student points light up
+  network:  [1.2, 2.0],   // 02 points connect (overlaps the settle of 01)
+  coachFly: [2.0, 2.8],   // 03 Coach Knight flies across, camera follows
+  comedy:   [2.8, 4.35],  // 04 bump → surprise (hold) → apology (hold) → astronaut smiles
+  dive:     [4.35, 5.45], // 05 space → atmosphere → clouds → city → house → window
+  bedroom:  [5.45, 6.85], // 06 quiet room → she stirs, yawns → notices the tablet (hold)
+  tablet:   [6.85, 7.95], // 07 sits up, grabs, taps → the screen lights her up
+  board:    [7.95, 8.95], // 08 official logo (hold) → live class, one knight moves
+  eyes:     [8.95, 9.85], // 09 her eyes light up (held close-up)
+  outside:  [9.85, 10.9], // 10 back through the window: proud coach, taps a knight
+  reveal:   [10.9, 12.3], // 11 pull back to a connected Earth, pieces rise
+  brand:    [12.3, 13.0], // 12 network converges → official logo
+  tagline:  [13.0, 13.4], // 13 Making ◆ Champions ◆ Worldwide (then a held beat)
+  wave:     [13.6, 14.0], // 14 coach pops in, looks at you, waves "Hi!"
+  chase:    [13.95, 14.7],// 15 knight hops past → viewer/knight/viewer/knight → chase → exit
 };
 
 export const COLORS = {

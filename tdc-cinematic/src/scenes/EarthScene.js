@@ -2,7 +2,7 @@
 // dawn terminator, gold night lights), atmosphere, cloud layer, the WebGL
 // camera path, and the DOM fly-through clouds that stitch space ↔ city.
 
-import { SCENES, HOME, NODES } from '../config.js';
+import { SCENES, HOME, NODES, TARGET_DURATION } from '../config.js';
 import { Track } from '../core/Track.js';
 
 const EARTH_VERT = `
@@ -277,20 +277,27 @@ export class EarthScene {
     // dist: camera distance to Earth; camX/camY: parallel camera offset;
     // lat/lon: point of the globe facing the camera; earthY: planet offset.
     this.track = new Track([
-      { t: s0, dist: 20, camX: 0, camY: 0.1, lat: 14, lon: -28, earthY: 0 },
-      { t: n0, dist: 7.4, camX: 0, camY: 0, lat: 16, lon: -2, earthY: 0, ease: 'power2.out' },
-      { t: f0, dist: 6.8, camX: 0.1, camY: 0, lat: 17, lon: 8, earthY: 0, ease: 'sine.inOut' },
-      { t: f1, dist: 6.4, camX: 1.9, camY: -0.1, lat: 17, lon: 20, earthY: 0, ease: 'power1.inOut' },
-      { t: k1, dist: 6.1, camX: 2.25, camY: -0.15, lat: 16, lon: 30, earthY: 0, ease: 'sine.inOut' },
+      // 01 — slow, majestic approach out of deep space…
+      { t: s0, dist: 22, camX: 0, camY: 0.12, lat: 12, lon: -34, earthY: 0 },
+      { t: n0 + 0.1, dist: 8.2, camX: 0, camY: 0, lat: 15, lon: -8, earthY: 0, ease: 'power3.out' },
+      // 02 — …then the camera breathes while the constellation connects.
+      { t: f0, dist: 7.3, camX: 0.05, camY: 0, lat: 16, lon: 4, earthY: 0, ease: 'sine.inOut' },
+      // 03 — pans with the coach as he flies across.
+      { t: f1, dist: 6.7, camX: 1.9, camY: -0.1, lat: 17, lon: 16, earthY: 0, ease: 'sine.inOut' },
+      // 04 — near-still drift during the comedy.
+      { t: k1 - 0.1, dist: 6.4, camX: 2.2, camY: -0.14, lat: 16, lon: 26, earthY: 0, ease: 'sine.inOut' },
+      // 05 — the dive: accelerate onto her home and into the atmosphere.
       { t: d0 + 0.55, dist: 1.7, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0, ease: 'power3.in' },
       { t: d0 + 0.9, dist: 1.1, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0, ease: 'power1.in' },
+      // 11 — pull back from her home to the whole connected world, then settle.
       { t: r0 + 0.3, dist: 1.1, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0 },
-      { t: r0 + 0.9, dist: 2.6, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon - 4, earthY: 0, ease: 'power2.out' },
-      { t: r1 - 0.1, dist: 5.0, camX: 0, camY: 0, lat: 28, lon: 44, earthY: 0, ease: 'power2.inOut' },
-      // Final horizon: the planet sinks low; its upper cap (Europe → Asia, with
-      // the chess pieces standing on it) stays visible beneath the logo.
-      { t: b1 - 0.2, dist: 4.9, camX: 0, camY: 0, lat: -8, lon: 42, earthY: -1.78, ease: 'power2.inOut' },
-      { t: 14.0, dist: 4.8, camX: 0, camY: 0, lat: -9, lon: 46, earthY: -1.8, ease: 'sine.out' },
+      { t: r0 + 0.85, dist: 2.7, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon - 5, earthY: 0, ease: 'power2.out' },
+      { t: r1 - 0.2, dist: 4.9, camX: 0, camY: 0, lat: 26, lon: 42, earthY: 0, ease: 'power2.inOut' },
+      { t: r1 + 0.05, dist: 4.85, camX: 0, camY: 0, lat: 25, lon: 45, earthY: 0, ease: 'sine.inOut' },
+      // 12–15 — final horizon: the planet sinks low; its upper cap (Europe →
+      // Asia, with the chess pieces standing on it) stays beneath the logo.
+      { t: b1 - 0.15, dist: 4.9, camX: 0, camY: 0, lat: -8, lon: 42, earthY: -1.78, ease: 'power2.inOut' },
+      { t: TARGET_DURATION, dist: 4.8, camX: 0, camY: 0, lat: -9, lon: 47, earthY: -1.8, ease: 'sine.out' },
     ], { parseEase: pe, logKeys: ['dist'] });
     this.b0 = b0;
   }
@@ -325,7 +332,7 @@ export class EarthScene {
     const [n0, n1] = SCENES.network;
     const [b0] = SCENES.brand;
     // Student points appear across the globe during scenes 01–02.
-    tl.fromTo(this.nodeUniforms.uReveal, { value: 0 }, { value: 1, duration: n1 - 0.35, ease: 'power1.inOut' }, 0.35);
+    tl.fromTo(this.nodeUniforms.uReveal, { value: 0 }, { value: 1, duration: n1 - 0.6, ease: 'sine.inOut' }, 0.45);
     tl.to(this.nodeUniforms.uBoost, { value: 1, duration: 0.3 }, n0);
     // Fly-through clouds (dive) and back out (pull-back).
     tl.fromTo(this.cloud, { c: 0 }, { c: 1.25, duration: 0.62, ease: 'none' }, d0 + 0.42);

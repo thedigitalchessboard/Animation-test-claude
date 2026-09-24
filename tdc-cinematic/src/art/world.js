@@ -98,6 +98,7 @@ function bedroomMarkup(id, detail) {
   return `
   <g data-part="bedroom" transform="translate(${WINDOW.x} ${WINDOW.y}) scale(${BEDROOM_K})">
     <rect x="-40" y="-40" width="1680" height="1080" fill="url(#${id}-wall)"/>
+    <g data-part="wallDecor">
     <path d="M300 170 L760 150 L840 620 L240 640 Z" fill="#F2D892" opacity=".07"/>
     <path d="M40 520 H1560" stroke="#0E2552" stroke-width="6" opacity=".6"/>
     <path d="M90 110 Q800 250 1510 110" stroke="#0A1A38" stroke-width="2.5" fill="none"/>
@@ -119,6 +120,7 @@ function bedroomMarkup(id, detail) {
     <rect x="290" y="252" width="22" height="78" fill="#F7F5F0"/><rect x="314" y="262" width="18" height="68" fill="#2C5BC4"/>
     <rect x="334" y="248" width="24" height="82" fill="#D8B15E"/><rect x="360" y="266" width="20" height="64" fill="#13306A" transform="rotate(12 370 330)"/>
     <g transform="translate(430 330)"><rect x="-26" y="-34" width="52" height="34" rx="6" fill="#13306A"/><circle cx="-11" cy="-17" r="9" fill="#F7F5F0"/><circle cx="11" cy="-17" r="9" fill="#F7F5F0"/><rect x="-14" y="-42" width="6" height="8" fill="#D8B15E"/><rect x="8" y="-42" width="6" height="8" fill="#D8B15E"/></g>
+    </g>
     <!-- desk with chessboard and notebook -->
     <rect x="80" y="636" width="330" height="22" rx="4" fill="#0E2148"/>
     <rect x="96" y="658" width="16" height="200" fill="#0A1936"/><rect x="378" y="658" width="16" height="200" fill="#0A1936"/>
@@ -134,6 +136,8 @@ function bedroomMarkup(id, detail) {
     <rect x="-40" y="840" width="1680" height="200" fill="#0A1834"/>
     <path d="M-40 900 H1640 M-40 960 H1640" stroke="#0F2146" stroke-width="3"/>
     <ellipse cx="760" cy="905" rx="430" ry="58" fill="#1F4390"/><ellipse cx="760" cy="905" rx="400" ry="46" fill="none" stroke="#F7F5F0" stroke-width="4" stroke-dasharray="14 10" opacity=".7"/>
+    <!-- focus pull: dims the room behind her when the screen lights up -->
+    <rect data-part="dim" x="-200" y="-200" width="2000" height="1400" fill="#040B1C" opacity="0"/>
     <!-- bed -->
     <path d="M1086 760 V470 Q1086 430 1116 430 Q1146 430 1146 470 V760 Z" fill="#0E2148"/>
     <path d="M1096 480 Q1096 446 1116 446 Q1136 446 1136 480" stroke="#D8B15E" stroke-width="3" fill="none"/>
@@ -150,6 +154,7 @@ function bedroomMarkup(id, detail) {
     <path d="M1162 700 H1308 M1162 770 H1308" stroke="#0A1834" stroke-width="3"/>
     <circle cx="1235" cy="736" r="5" fill="#D8B15E"/><circle cx="1235" cy="806" r="5" fill="#D8B15E"/>
     <rect x="1256" y="590" width="62" height="11" rx="2" fill="#2C5BC4"/><rect x="1260" y="601" width="56" height="11" rx="2" fill="#F7F5F0"/>
+    <path d="${PIECE_PATHS.knight}" transform="translate(1281 590.5) scale(.09)" fill="#F2D892"/>
     ${detail ? '<path d="M1270 588 Q1290 556 1310 588" stroke="#13306A" stroke-width="6" fill="none"/><ellipse cx="1270" cy="588" rx="8" ry="5" fill="#2C5BC4"/><ellipse cx="1310" cy="588" rx="8" ry="5" fill="#2C5BC4"/>' : ''}
     <g data-part="tabletNS" transform="translate(1196 612)">
       <ellipse data-part="nsGlow" cx="-4" cy="-44" rx="70" ry="60" fill="url(#${id}-notif)" opacity=".6"/>
@@ -162,6 +167,16 @@ function bedroomMarkup(id, detail) {
       <path d="M-20 0 L20 -4 L8 -18 Z" fill="#0A1834"/>
     </g>
     <path data-part="roomGlow" d="M500 1000 C500 600 700 300 960 300 C1220 300 1420 600 1420 1000 Z" fill="url(#${id}-roomGlow)" opacity="0"/>
+    <!-- out-of-focus foreground (parallax depth): a leafy plant and the bed post -->
+    <g data-part="fg" opacity=".92">
+      <g fill="url(#${id}-fgLeaf)">
+        <path d="M150 1060 C90 900 20 860 -40 850 C40 900 90 960 120 1060 Z"/>
+        <path d="M170 1060 C160 880 200 790 260 740 C230 830 210 930 200 1060 Z"/>
+        <path d="M190 1060 C260 930 340 900 420 905 C340 940 270 990 230 1060 Z"/>
+        <path d="M140 1060 C60 960 -10 960 -60 980 C10 990 70 1020 100 1060 Z"/>
+      </g>
+      <path d="M100 1000 H280 L262 1080 H118 Z" fill="#050D20"/>
+    </g>
   </g>`;
 }
 
@@ -193,6 +208,9 @@ export function createWorld({ detail = true } = {}) {
     <radialGradient id="${id}-notif" cx=".5" cy=".5" r=".5">
       <stop offset="0" stop-color="#F2D892" stop-opacity=".85"/><stop offset="1" stop-color="#F2D892" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="${id}-fgLeaf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#10284F"/><stop offset="1" stop-color="#040B1C"/>
+    </linearGradient>
     <radialGradient id="${id}-roomGlow" cx=".5" cy=".62" r=".6">
       <stop offset="0" stop-color="#DDEBFF" stop-opacity=".22"/><stop offset="1" stop-color="#DDEBFF" stop-opacity="0"/>
     </radialGradient>

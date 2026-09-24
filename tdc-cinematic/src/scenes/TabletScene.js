@@ -126,17 +126,18 @@ export class TabletScene {
       const mover = new Prop(L.p.mover, { x: L.from.x + L.sq / 2, y: L.from.y + L.sq - 5, scale: L.sq / 132 });
       return { ...L, coach, girl, mover, fx: { ui: 0, flash: 0, splash: 1, fromSq: 0, toSq: 0, arc: 0 } };
     });
-    this.view = { s: 0.62, o: 0 };
+    this.view = { s: 0.62, o: 0, iris: 0 };
   }
 
   build(tl) {
     const [b0, b1] = SCENES.board;
     const layer = this.ctx.layers.tablet;
     tl.set(layer, { autoAlpha: 0 }, 0);
-    tl.fromTo(this.view, { s: 0.5, o: 0 }, { s: 1, o: 1, duration: 0.2, ease: 'power2.out' }, b0 - 0.08);
-    tl.set(layer, { autoAlpha: 1 }, b0 - 0.08);
-    tl.to(this.view, { s: 1.18, o: 0, duration: 0.16, ease: 'power2.in' }, b1 - 0.1);
-    tl.set(layer, { autoAlpha: 0 }, b1 + 0.07);
+    // Enter "through the screen": an iris opens from the glowing tablet.
+    tl.fromTo(this.view, { s: 0.9, o: 1, iris: 0 }, { s: 1, iris: 1, duration: 0.22, ease: 'power2.in' }, b0 - 0.04);
+    tl.set(layer, { autoAlpha: 1 }, b0 - 0.04);
+    tl.to(this.view, { s: 1.18, o: 0, duration: 0.18, ease: 'power2.in' }, b1 - 0.02);
+    tl.set(layer, { autoAlpha: 0 }, b1 + 0.17);
 
     for (const L of this.layouts) {
       const fx = L.fx;
@@ -144,22 +145,24 @@ export class TabletScene {
       const c = L.coach.state;
       const baseX = m.x, baseY = m.y, baseS = m.scale;
       const dx = L.to.x - L.from.x, dy = L.to.y - L.from.y;
-      tl.fromTo(fx, { flash: 0.9 }, { flash: 0, duration: 0.2 }, b0 - 0.04);
-      tl.to(fx, { splash: 0, ui: 1, duration: 0.14, ease: 'power1.inOut' }, b0 + 0.3);
-      // Coach explains and points at the board (silent, expressive).
-      tl.to(c, { ...COACH_POSES.poke, handPointR: 1, duration: 0.14, ease: 'power2.out' }, b0 + 0.38);
-      tl.to(c, { mSmile: 0, mO: 1, duration: 0.06, yoyo: true, repeat: 3 }, b0 + 0.4);
-      tl.to(c, { lookX: 1, turn: 0.4, duration: 0.1 }, b0 + 0.42);
+      // The official logo greets her first (held), then the live class opens.
+      tl.fromTo(fx, { flash: 0.9 }, { flash: 0, duration: 0.25 }, b0 - 0.04);
+      tl.to(fx, { splash: 0, ui: 1, duration: 0.16, ease: 'power1.inOut' }, b0 + 0.38);
+      // Coach Knight on video: a friendly little wave, then he points at the board.
+      tl.to(c, { ...COACH_POSES.wave, handOpenR: 1, duration: 0.12, ease: 'power2.out' }, b0 + 0.4);
+      tl.to(c, { foreR: 10, duration: 0.06, yoyo: true, repeat: 1 }, b0 + 0.45);
+      tl.to(c, { ...COACH_POSES.poke, handOpenR: 0, handPointR: 1, lookX: 1, turn: 0.4, duration: 0.12, ease: 'power2.out' }, b0 + 0.55);
+      tl.to(c, { mSmile: 0, mO: 1, duration: 0.06, yoyo: true, repeat: 3 }, b0 + 0.58);
       // The knight: LIFT → MOVE → SETTLE.
-      tl.to(fx, { fromSq: 0.45, duration: 0.08 }, b0 + 0.46);
-      tl.to(m, { y: baseY - 16, scale: baseS * 1.14, rot: -8, duration: 0.1, ease: 'power2.out' }, b0 + 0.48);
-      tl.to(fx, { arc: 1, toSq: 0.3, duration: 0.08 }, b0 + 0.54);
-      tl.to(m, { x: baseX + dx, duration: 0.2, ease: 'power2.inOut' }, b0 + 0.58);
-      tl.to(m, { y: baseY + dy - 24, duration: 0.2, ease: 'power1.out' }, b0 + 0.58);
-      tl.to(m, { y: baseY + dy, scale: baseS, rot: 0, duration: 0.08, ease: 'power2.in' }, b0 + 0.78);
-      tl.to(m, { sy: 0.92, sx: 1.06, duration: 0.04, yoyo: true, repeat: 1 }, b0 + 0.86);
-      tl.to(fx, { arc: 0, fromSq: 0.2, toSq: 0.55, duration: 0.1 }, b0 + 0.84);
-      tl.to(c, { lookX: 0, turn: 0, mSmile: 1, mO: 0, ...COACH_POSES.wave, handOpenR: 1, handPointR: 0, duration: 0.12 }, b0 + 0.84);
+      tl.to(fx, { fromSq: 0.45, duration: 0.08 }, b0 + 0.56);
+      tl.to(m, { y: baseY - 16, scale: baseS * 1.14, rot: -8, duration: 0.1, ease: 'power2.out' }, b0 + 0.58);
+      tl.to(fx, { arc: 1, toSq: 0.3, duration: 0.08 }, b0 + 0.62);
+      tl.to(m, { x: baseX + dx, duration: 0.2, ease: 'power2.inOut' }, b0 + 0.68);
+      tl.to(m, { y: baseY + dy - 24, duration: 0.2, ease: 'power1.out' }, b0 + 0.68);
+      tl.to(m, { y: baseY + dy, scale: baseS, rot: 0, duration: 0.07, ease: 'power2.in' }, b0 + 0.88);
+      tl.to(m, { sy: 0.92, sx: 1.06, duration: 0.035, yoyo: true, repeat: 1 }, b0 + 0.95);
+      tl.to(fx, { arc: 0, fromSq: 0.2, toSq: 0.55, duration: 0.1 }, b0 + 0.92);
+      tl.to(c, { lookX: 0, turn: 0, mSmile: 1, mO: 0, handPointR: 0, handOpenR: 1, ...COACH_POSES.wave, duration: 0.1 }, b0 + 0.92);
     }
   }
 
@@ -168,6 +171,8 @@ export class TabletScene {
     if (layer.style.visibility === 'hidden') return;
     const portrait = this.ctx.responsive.portrait;
     layer.style.opacity = this.view.o.toFixed(3);
+    const r = this.view.iris * 90;
+    layer.style.clipPath = r >= 89.9 ? 'none' : `circle(${r.toFixed(2)}% at 50% 56%)`;
     for (const L of this.layouts) {
       const on = L.portrait === portrait;
       L.svg.style.display = on ? '' : 'none';
