@@ -7,6 +7,9 @@
  */
 
 export const TARGET_DURATION = 36.6;
+// The film starts here (seconds into the full ~36.6 s timeline) and plays to the end:
+// pull back from her home to Earth, network connects, logo, wave, chase.
+export const START_TIME = 27.0;
 export const HARD_MAX_DURATION = 59.0;
 
 // [start, end] in seconds — a ~36 s short film (website hero + 30–40 s ad cut).
@@ -115,13 +118,7 @@ export const PROFILES = {
 
 // Visually hidden description for assistive tech (never rendered on screen).
 export const A11Y_DESCRIPTION =
-  'A silent 36-second animated story. In space, a friendly human chess coach with a short cape ' +
-  'flies past the Earth and dashes between two astronauts playing chess on a hovering board, knocking ' +
-  'their knight away. Surprised, he catches it, puts it back and apologises with his hands together; ' +
-  'the astronauts laugh and give a thumbs up. He dives through the clouds to a house at dawn, peeks ' +
-  'through a window at a sleeping girl and taps the glass. Her tablet glows; she wakes, stretches, ' +
-  'picks it up and joins a live online chess class with a coach and children from around the world. ' +
-  'She makes a move herself, gets it right, and her eyes light up with joy. Outside, the coach smiles ' +
-  'proudly. The view pulls back to an Earth connected by glowing lines, chess pieces and children in ' +
-  'many countries, which gather into the Digital Chessboard logo with the tagline Making Champions ' +
-  'Worldwide. The coach pops in to wave, spots a chess knight hopping away, and chases after it.';
+  'A silent 10-second animated story. The view pulls back from a girl\'s home to an Earth connected by ' +
+  'glowing lines, chess pieces and children in many countries, which gather into the Digital Chessboard ' +
+  'logo with the tagline Making Champions Worldwide. A friendly human chess coach pops in to wave, spots ' +
+  'a chess knight hopping away, and chases after it.';

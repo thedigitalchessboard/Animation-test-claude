@@ -1,6 +1,6 @@
 // Orchestrates layers, managers and scenes, and owns the render loop.
 
-import { SCENES, TARGET_DURATION } from '../config.js';
+import { SCENES, TARGET_DURATION, START_TIME } from '../config.js';
 import { AssetManager } from './AssetManager.js';
 import { TimelineManager } from './TimelineManager.js';
 import { ResponsiveManager } from './ResponsiveManager.js';
@@ -92,7 +92,7 @@ export class SceneManager {
     } else if (this.a11y.reducedMotion) {
       this.showStill();
     } else {
-      this.timeline.seek(0);
+      this.timeline.seek(START_TIME);
       this.renderFrame(true);
       if (o.autoplay !== false && this.perf.visible) this.play();
     }

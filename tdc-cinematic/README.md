@@ -1,9 +1,9 @@
 # TDC Cinematic — drop-in website animation
 
-A silent, ~36-second, real-time (Three.js + GSAP + SVG) animated short film for **The Digital Chessboard** homepage.
+A silent, ~9-second, real-time (Three.js + GSAP + SVG) animated short film for **The Digital Chessboard** homepage.
 Everything the animation needs lives in this one folder, so it can be copied into any existing website.
 
-- **Duration:** 36.6 s (Disney-style pacing; also works as a 30–40 s ad). `TARGET_DURATION` / `SCENES` in `src/config.js` control it, and a safety cap stops it from ever exceeding 59 s. Timing follows the wall clock, so a slow device drops frames instead of stretching the film.
+- **Duration:** ~9.6 s. It is the last part (27 s → end) of the original 36.6 s film: pull back from her home to the connected Earth, logo + tagline, the coach's wave and the knight chase. `START_TIME` in `src/config.js` sets where it begins; the earlier scenes are still in `SCENES` but are skipped. Set `START_TIME = 0` for the full film. `TARGET_DURATION` / `SCENES` in `src/config.js` control it, and a safety cap stops it from ever exceeding 59 s. Timing follows the wall clock, so a slow device drops frames instead of stretching the film.
 - **No audio, no subtitles, no dialogue.** The only text is the brand lockup: the official logo plus *Making ◆ Champions ◆ Worldwide*.
 - **No build step, no CDN.** Three.js and GSAP are vendored in `vendor/` as small ES modules.
 - **Lazy:** until the section comes near the viewport, only a 3 KB script loads.

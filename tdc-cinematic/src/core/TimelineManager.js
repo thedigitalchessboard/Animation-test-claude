@@ -2,7 +2,7 @@
 // clock tween drives the per-frame scene updates. The film can never exceed
 // HARD_MAX_DURATION: if it would, it is time-scaled down to the target.
 
-import { TARGET_DURATION, HARD_MAX_DURATION } from '../config.js';
+import { TARGET_DURATION, HARD_MAX_DURATION, START_TIME } from '../config.js';
 
 export class TimelineManager {
   constructor(gsap, { onComplete } = {}) {
@@ -20,7 +20,7 @@ export class TimelineManager {
       this.tl.timeScale(scale);
       console.warn(`[tdc-cinematic] timeline was ${d.toFixed(2)}s — time-scaled ×${scale.toFixed(3)} to stay under ${HARD_MAX_DURATION}s`);
     }
-    this.duration = this.tl.duration() / this.tl.timeScale();
+    this.duration = (this.tl.duration() - START_TIME) / this.tl.timeScale();
     return this.duration;
   }
 
@@ -30,8 +30,8 @@ export class TimelineManager {
 
   play() { this.tl.play(); }
   pause() { this.tl.pause(); }
-  restart() { this.tl.restart(); }
-  seek(t) { this.tl.seek(Math.max(0, Math.min(t, this.tl.duration()))); }
+  restart() { this.tl.play(START_TIME); }
+  seek(t) { this.tl.seek(Math.max(START_TIME, Math.min(t, this.tl.duration()))); }
 
   dispose() { this.tl.kill(); }
 }
