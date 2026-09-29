@@ -14,6 +14,7 @@ export class TimelineManager {
 
   /** Call after all scenes have added their tweens. */
   finalize() {
+    this.trim(TARGET_DURATION);
     const d = this.tl.duration();
     if (d > HARD_MAX_DURATION) {
       const scale = d / TARGET_DURATION;
@@ -22,6 +23,13 @@ export class TimelineManager {
     }
     this.duration = this.tl.duration() / this.tl.timeScale();
     return this.duration;
+  }
+
+  /** Drop anything that starts at/after `end` so a trimmed film really stops there. */
+  trim(end) {
+    for (const child of this.tl.getChildren(false, true, true)) {
+      if (child.startTime() >= end - 1e-6) this.tl.remove(child);
+    }
   }
 
   get time() { return this.clock.t; }

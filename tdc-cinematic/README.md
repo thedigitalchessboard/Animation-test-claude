@@ -1,14 +1,14 @@
 # TDC Cinematic — drop-in website animation
 
-A silent, ~36-second, real-time (Three.js + GSAP + SVG) animated short film for **The Digital Chessboard** homepage.
+A silent, 27-second, real-time (Three.js + GSAP + SVG) animated short film for **The Digital Chessboard** homepage.
 Everything the animation needs lives in this one folder, so it can be copied into any existing website.
 
-- **Duration:** 36.6 s (Disney-style pacing; also works as a 30–40 s ad). `TARGET_DURATION` / `SCENES` in `src/config.js` control it, and a safety cap stops it from ever exceeding 59 s. Timing follows the wall clock, so a slow device drops frames instead of stretching the film.
-- **No audio, no subtitles, no dialogue.** The only text is the brand lockup: the official logo plus *Making ◆ Champions ◆ Worldwide*.
+- **Duration:** 27 s (Disney-style pacing; cut from the original ~36 s at the point where the coach stands outside her window). `TARGET_DURATION` / `SCENES` in `src/config.js` control it, and a safety cap stops it from ever exceeding 59 s. Timing follows the wall clock, so a slow device drops frames instead of stretching the film.
+- **No audio, no subtitles, no dialogue.** The only on-screen branding is the official horizontal logo on the tablet screens.
 - **No build step, no CDN.** Three.js and GSAP are vendored in `vendor/` as small ES modules.
 - **Lazy:** until the section comes near the viewport, only a 3 KB script loads.
 - **Responsive:** desktop, tablet, and mobile each get their own framing and quality level (the mobile tablet screen uses a portrait layout, for example).
-- **Accessible:** `prefers-reduced-motion` shows a still brand frame, pause/play and replay buttons are keyboard-accessible, and screen readers get a text description of the story.
+- **Accessible:** `prefers-reduced-motion` shows a still frame (the coach outside the window), pause/play and replay buttons are keyboard-accessible, and screen readers get a text description of the story.
 
 ---
 
@@ -180,13 +180,9 @@ To swap a logo, replace the file under the same name, or pass new paths in `asse
 | 08 | 17.3–19.3 | She sits up, picks up the tablet and taps it; the screen lights her face and the room dims around her |
 | 09 | 19.3–23.5 | Through the screen: **official logo (held)** → a live class with a TDC mentor and **classmates from Japan, Brazil, Kenya and the UAE**. The mentor shows a knight move, then **she makes her own move** with her finger → check mark, confetti, everyone cheers |
 | 10 | 23.5–25.5 | Close-up: **her eyes light up** (catchlights, screen reflection, sparkle), big smile, a "Yes!" fist pump, a happy blink |
-| 11 | 25.5–27.5 | Back outside: he's still there, **hand on heart, proud (held)**. A knight appears; he taps it |
-| 12 | 27.5–30.9 | Pull back to Earth: the network spreads from her home, six chess pieces rise, and **children in London, Berlin, Dubai, Nairobi and Tokyo** appear on the globe, learning on tablets |
-| 13–14 | 30.9–33.4 | Everything gathers into light → official logo → *Making ◆ Champions ◆ Worldwide* (**held**) |
-| 15 | 33.4–34.3 | The coach pops in from the side, looks at you, and waves "Hi!" |
-| 16 | 34.3–36.6 | A knight hops past in front of him → he looks at the viewer → the knight → the viewer → the knight → chase → exit. End. |
+| 11 | 25.5–27.0 | Back outside: he's still there, **hand on heart, proud (held)**. A knight appears. **The film ends here at 27 s.** |
 
-Every camera move is a smooth spline through its keyframes, secondary motion (breathing, floating, the cape) is slow and gentle, and the emotional beats (marked **held**) get time to land. For a 30 s ad cut, shorten `SCENES` in `src/config.js`: every scene reads its timing from there. If a timing edit ever pushes the film past `HARD_MAX_DURATION` (59 s), `TimelineManager` time-scales it back down and logs a warning.
+Every camera move is a smooth spline through its keyframes, secondary motion (breathing, floating, the cape) is slow and gentle, and the emotional beats (marked **held**) get time to land. Scenes 12–16 (pull-back to Earth, logo + tagline, the coach's wave and the knight chase) were cut: anything starting at or after `TARGET_DURATION` (27 s) is removed from the timeline, and their entries remain in `SCENES` only for reference. To change the length, edit `TARGET_DURATION` and `SCENES` in `src/config.js`: every scene reads its timing from there. If a timing edit ever pushes the film past `HARD_MAX_DURATION` (59 s), `TimelineManager` time-scales it back down and logs a warning.
 
 ---
 

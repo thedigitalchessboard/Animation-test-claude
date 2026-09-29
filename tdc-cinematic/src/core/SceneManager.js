@@ -15,9 +15,8 @@ import { CoachScene } from '../scenes/CoachScene.js';
 import { TabletScene } from '../scenes/TabletScene.js';
 import { FinalBrandScene } from '../scenes/FinalBrandScene.js';
 
-// Frame shown for prefers-reduced-motion: Earth + network + pieces + logo +
-// tagline + Coach Knight waving.
-const STILL_TIME = SCENES.wave[0] + 0.5;
+// Frame shown for prefers-reduced-motion: the proud coach outside the window.
+const STILL_TIME = SCENES.outside[0] + 1.2;
 
 export class SceneManager {
   constructor(container, options, a11y) {

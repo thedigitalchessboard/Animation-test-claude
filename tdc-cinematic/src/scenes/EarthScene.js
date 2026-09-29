@@ -271,8 +271,6 @@ export class EarthScene {
     const [f0, f1] = SCENES.coachFly;
     const [, p1] = SCENES.players;
     const [d0] = SCENES.dive;
-    const [r0, r1] = SCENES.reveal;
-    const [, b1] = SCENES.brand;
     // dist: camera distance to Earth; camX/camY: parallel camera offset;
     // lat/lon: point of the globe facing the camera; earthY: planet offset.
     // (In space the camera also pans with the illustrated stage camera.)
@@ -284,14 +282,8 @@ export class EarthScene {
       { t: d0, dist: 6.5, camX: 0, camY: -0.1, lat: 16, lon: 26, earthY: 0 },
       { t: d0 + 0.62, dist: 1.7, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0 }, // the dive
       { t: d0 + 1.0, dist: 1.08, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0 },
-      { t: r0 + 0.3, dist: 1.08, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0 },
-      { t: r0 + 1.1, dist: 2.9, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon - 8, earthY: 0 },  // pull back from her home
-      { t: r1 - 0.5, dist: 5.2, camX: 0, camY: 0, lat: 20, lon: 40, earthY: 0 },      // the whole connected world
-      { t: r1 + 0.1, dist: 5.1, camX: 0, camY: 0, lat: 18, lon: 46, earthY: 0 },
-      // Final horizon: the planet sinks low; its upper cap (Europe → Asia, with
-      // the chess pieces standing on it) stays visible beneath the logo.
-      { t: b1 - 0.1, dist: 4.9, camX: 0, camY: 0, lat: -8, lon: 42, earthY: -1.78 },
-      { t: TARGET_DURATION, dist: 4.8, camX: 0, camY: 0, lat: -9, lon: 50, earthY: -1.8 },
+      // The film is cut at TARGET_DURATION, before the pull-back to the whole Earth.
+      { t: TARGET_DURATION, dist: 1.08, camX: 0, camY: 0, lat: HOME.lat, lon: HOME.lon, earthY: 0 },
     ], { parseEase: pe, logKeys: ['dist'] });
     this.f0 = f0;
   }
