@@ -6,13 +6,10 @@
  * HARD_MAX_DURATION (it time-scales the film down and warns instead).
  */
 
-// The film is cut at 27 s (right after the "outside" scene). Scenes 12–16 below
-// (reveal → chase) are kept for reference but are trimmed away: anything that
-// starts at or after TARGET_DURATION is removed from the master timeline.
-export const TARGET_DURATION = 27.0;
+export const TARGET_DURATION = 36.6;
 export const HARD_MAX_DURATION = 59.0;
 
-// [start, end] in seconds — a 27 s short film (cut from the original ~36 s).
+// [start, end] in seconds — a ~36 s short film (website hero + 30–40 s ad cut).
 //
 // Pacing (v3): Disney-style storytelling. Every beat has anticipation, action
 // and a held reaction; camera moves are smooth splines; secondary motion is
@@ -33,12 +30,12 @@ export const SCENES = {
   tablet:   [17.3, 19.3], // 08 sits up, picks up the tablet, taps — the screen lights her face
   board:    [19.3, 23.5], // 09 official logo → live class with kids worldwide → her move → success!
   eyes:     [23.5, 25.5], // 10 close-up: her eyes light up, she loves it
-  outside:  [25.5, 27.0], // 11 (film ends here at 27 s) back outside: the proud coach, a knight appears, he taps it
-  reveal:   [27.5, 30.9], // CUT: 12 pull back to Earth: network spreads, pieces rise, kids everywhere
-  brand:    [30.9, 32.1], // CUT: 13 everything gathers into light → official logo
-  tagline:  [32.1, 32.7], // CUT: 14 Making ◆ Champions ◆ Worldwide (then a held beat)
-  wave:     [33.4, 34.3], // CUT: 15 coach pops in, looks at you, waves "Hi!"
-  chase:    [34.3, 36.3], // CUT: 16 knight hops past → viewer/knight/viewer/knight → chase → exit
+  outside:  [25.5, 27.5], // 11 back outside: the proud coach, a knight appears, he taps it
+  reveal:   [27.5, 30.9], // 12 pull back to Earth: network spreads, pieces rise, kids everywhere
+  brand:    [30.9, 32.1], // 13 everything gathers into light → official logo
+  tagline:  [32.1, 32.7], // 14 Making ◆ Champions ◆ Worldwide (then a held beat)
+  wave:     [33.4, 34.3], // 15 coach pops in, looks at you, waves "Hi!"
+  chase:    [34.3, 36.3], // 16 knight hops past → viewer/knight/viewer/knight → chase → exit
 };
 
 export const COLORS = {
@@ -118,10 +115,13 @@ export const PROFILES = {
 
 // Visually hidden description for assistive tech (never rendered on screen).
 export const A11Y_DESCRIPTION =
-  'A silent 27-second animated story. In space, a friendly human chess coach with a short cape ' +
+  'A silent 36-second animated story. In space, a friendly human chess coach with a short cape ' +
   'flies past the Earth and dashes between two astronauts playing chess on a hovering board, knocking ' +
   'their knight away. Surprised, he catches it, puts it back and apologises with his hands together; ' +
   'the astronauts laugh and give a thumbs up. He dives through the clouds to a house at dawn, peeks ' +
   'through a window at a sleeping girl and taps the glass. Her tablet glows; she wakes, stretches, ' +
   'picks it up and joins a live online chess class with a coach and children from around the world. ' +
-  'She makes a move herself, gets it right, and her eyes light up with joy. Outside, the coach smiles proudly as a chess knight appears beside him.';
+  'She makes a move herself, gets it right, and her eyes light up with joy. Outside, the coach smiles ' +
+  'proudly. The view pulls back to an Earth connected by glowing lines, chess pieces and children in ' +
+  'many countries, which gather into the Digital Chessboard logo with the tagline Making Champions ' +
+  'Worldwide. The coach pops in to wave, spots a chess knight hopping away, and chases after it.';
